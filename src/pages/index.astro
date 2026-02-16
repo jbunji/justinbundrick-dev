@@ -1,0 +1,417 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/global.css';
+
+const skills = {
+  Languages: ['C', 'JavaScript', 'TypeScript', 'Python', 'SQL', 'PL/SQL', 'Swift', 'ColdFusion', 'ATLAS'],
+  Frameworks: ['React', 'Next.js', 'Node.js', 'Astro', 'Tailwind', 'Prisma', 'SwiftUI', 'iOS Development'],
+  Databases: ['Oracle 19c/12c/11g', 'PostgreSQL', 'MongoDB', 'Supabase', 'RMAN', 'PL/SQL'],
+  'AI/ML Tools': ['Claude Code', 'Anthropic API', 'OpenAI API', 'AI-Assisted Dev'],
+  DevOps: ['Docker', 'Git', 'SSH', 'Linux', 'Solaris', 'macOS', 'Oracle WebLogic', 'Fusion Middleware'],
+  'Domain Expertise': ['LabWindows/CVI', 'Military ATE', 'ATLAS', 'MIL-STD'],
+};
+
+const projects = [
+  {
+    title: 'Asset Maintenance System',
+    desc: 'Full-stack web application replacing a legacy ColdFusion/Oracle system with modern React + Node.js + PostgreSQL for military asset tracking and maintenance workflows.',
+    tech: ['React', 'Node.js', 'PostgreSQL', 'Prisma', 'TypeScript'],
+    icon: '📊',
+  },
+  {
+    title: 'Legacy Military Code Migration',
+    desc: 'Migrated a 30,000-line ATLAS test program to modern C (LabWindows/CVI). 3-month timeline using AI-augmented development. Zero defects in production deployment.',
+    tech: ['ATLAS', 'C', 'LabWindows/CVI', 'Claude Code'],
+    icon: '🎯',
+  },
+  {
+    title: 'HabitForge AI',
+    desc: 'Cross-platform habit tracking app with AI-powered insights. Native iOS app built with SwiftUI + Next.js web companion.',
+    tech: ['Swift', 'SwiftUI', 'Next.js', 'TypeScript', 'AI Integration'],
+    icon: '🧠',
+  },
+  {
+    title: 'SubSentry',
+    desc: 'Subscription management app helping users track and optimize recurring expenses.',
+    tech: ['Swift', 'SwiftUI', 'iOS'],
+    icon: '💰',
+  },
+  {
+    title: 'Pinch',
+    desc: 'Voice-first AI assistant interface — hands-free conversational AI on iOS. Speech-to-text, real-time AI chat, text-to-speech response.',
+    tech: ['Swift', 'SwiftUI', 'WebSocket', 'Speech Recognition', 'TTS'],
+    icon: '🎙️',
+  },
+  {
+    title: 'Amazon Analytics Platform',
+    desc: 'Custom analytics and automation suite for Amazon marketplace operations. SP-API integration, automated reporting, fraud detection, inventory management.',
+    tech: ['Python', 'Node.js', 'Amazon SP-API', 'Data Analysis'],
+    icon: '📈',
+  },
+  {
+    title: 'Enterprise Oracle DBA',
+    desc: '17 years managing mission-critical Oracle environments for Department of Defense. High-availability systems, RMAN backup/recovery, WebLogic deployments, Fusion Middleware, and CAC/2FA authentication.',
+    tech: ['Oracle 19c/12c/11g', 'RMAN', 'WebLogic', 'Fusion Middleware', 'PL/SQL', 'Solaris/Linux'],
+    icon: '🗄️',
+  },
+  {
+    title: 'AI-Powered Business Automation',
+    desc: 'Custom AI assistants and workflow automation for business operations. Integrating LLMs, APIs, and automation pipelines to streamline complex processes.',
+    tech: ['Anthropic Claude', 'OpenAI', 'N8N', 'Custom APIs'],
+    icon: '🤖',
+  },
+];
+
+const services = [
+  { title: 'Legacy System Migration', desc: 'Modernizing aging codebases while preserving critical business logic.', icon: '🔄' },
+  { title: 'Full-Stack Web Development', desc: 'End-to-end web applications with modern frameworks and best practices.', icon: '💻' },
+  { title: 'AI Integration & Automation', desc: 'Leveraging LLMs and AI tools to accelerate development and automate workflows.', icon: '⚡' },
+  { title: 'Database Architecture', desc: 'Designing, optimizing, and migrating databases for performance and scale.', icon: '🗄️' },
+];
+
+const categoryColors: Record<string, string> = {
+  Languages: 'from-blue-500/20 to-blue-600/10 border-blue-500/30 hover:border-blue-400/50',
+  Frameworks: 'from-cyan-500/20 to-cyan-600/10 border-cyan-500/30 hover:border-cyan-400/50',
+  Databases: 'from-purple-500/20 to-purple-600/10 border-purple-500/30 hover:border-purple-400/50',
+  'AI/ML Tools': 'from-emerald-500/20 to-emerald-600/10 border-emerald-500/30 hover:border-emerald-400/50',
+  DevOps: 'from-orange-500/20 to-orange-600/10 border-orange-500/30 hover:border-orange-400/50',
+  'Domain Expertise': 'from-rose-500/20 to-rose-600/10 border-rose-500/30 hover:border-rose-400/50',
+};
+---
+
+<Layout title="Justin Bundrick — Software Engineer">
+  <!-- Nav -->
+  <nav class="fixed top-0 w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="#" class="font-mono font-bold text-lg text-blue-400 hover:text-blue-300 transition-colors">
+        &lt;JB /&gt;
+      </a>
+      <div class="hidden md:flex gap-8 text-sm text-gray-400">
+        <a href="#about" class="hover:text-white transition-colors">About</a>
+        <a href="#skills" class="hover:text-white transition-colors">Skills</a>
+        <a href="#projects" class="hover:text-white transition-colors">Projects</a>
+        <a href="#services" class="hover:text-white transition-colors">Services</a>
+        <a href="#contact" class="hover:text-white transition-colors">Contact</a>
+      </div>
+      <button id="mobile-menu-btn" class="md:hidden text-gray-400 hover:text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+      <div class="flex flex-col gap-4 text-sm text-gray-400">
+        <a href="#about" class="hover:text-white transition-colors">About</a>
+        <a href="#skills" class="hover:text-white transition-colors">Skills</a>
+        <a href="#projects" class="hover:text-white transition-colors">Projects</a>
+        <a href="#services" class="hover:text-white transition-colors">Services</a>
+        <a href="#contact" class="hover:text-white transition-colors">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="relative min-h-screen flex items-center justify-center animated-gradient overflow-hidden">
+    <!-- Orbs -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="orb-1 absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+      <div class="orb-2 absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-500/8 rounded-full blur-3xl"></div>
+      <div class="orb-3 absolute top-1/2 left-1/2 w-64 h-64 bg-purple-500/6 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 text-center px-6 max-w-4xl">
+      <p class="font-mono text-blue-400 text-sm mb-4 tracking-widest uppercase">Hello, I'm</p>
+      <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
+        Justin Bundrick
+      </h1>
+      
+      <!-- Terminal typing -->
+      <div class="font-mono text-lg md:text-2xl text-gray-300 mb-6 h-10">
+        <span class="text-cyan-400">&gt; </span>
+        <span id="typed-text"></span>
+        <span class="cursor-blink text-cyan-400">▊</span>
+      </div>
+
+      <p class="text-gray-400 text-base md:text-lg mb-10 max-w-2xl mx-auto">
+        Senior Software Engineer &nbsp;|&nbsp; Oracle DBA &nbsp;|&nbsp; iOS Developer &nbsp;|&nbsp; Defense &amp; Aerospace
+      </p>
+
+      <!-- Credentials Bar -->
+      <div class="flex flex-wrap justify-center gap-4 mb-10 text-sm">
+        <span class="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-300 font-mono">17+ Years Experience</span>
+        <span class="px-4 py-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-cyan-300 font-mono">Georgia Tech Engineering</span>
+        <span class="px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full text-purple-300 font-mono">DoD Clearance</span>
+        <span class="px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-300 font-mono">Oracle Certified</span>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#projects" class="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-all hover:shadow-lg hover:shadow-blue-500/25">
+          View My Work
+        </a>
+        <a href="#contact" class="px-8 py-3 border border-gray-600 hover:border-blue-400 text-gray-300 hover:text-white rounded-lg font-medium transition-all">
+          Get In Touch
+        </a>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="py-24 px-6">
+    <div class="max-w-4xl mx-auto reveal">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">About Me</h2>
+      <div class="w-20 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mb-10 rounded-full"></div>
+      
+      <div class="space-y-6 text-gray-300 text-lg leading-relaxed">
+        <p>
+          I'm a Senior Software Engineer and Oracle DBA with 17 years of professional experience 
+          building and maintaining mission-critical systems. I hold a B.S. in Computer Engineering 
+          from Georgia Institute of Technology (2009), an active DoD Security Clearance, and 
+          certifications including Oracle Certified Professional (OCP) and CompTIA Security+.
+        </p>
+        <p>
+          I started my career as a GS-12 at Robins AFB with the Department of Defense, where I cut 
+          my teeth on Oracle databases and military systems. That foundation gave me deep expertise 
+          in Oracle 19c/12c/11g, RMAN backup and recovery, WebLogic application servers, and Fusion 
+          Middleware — the kind of enterprise stack that most people avoid and I genuinely enjoy working with.
+        </p>
+        <p>
+          Currently, I'm a Senior Software Engineer and Oracle DBA at ALAE Consultants on the RAMPOD 
+          Program, where I architect and maintain complex database systems alongside full-stack web 
+          development. I've gone from government service to the contractor side, and I bring that 
+          dual perspective to every project.
+        </p>
+        <p>
+          Outside of work, I'm all-in on AI-augmented development and iOS apps. I use tools like 
+          Claude Code daily — not as a crutch, but as a multiplier. It lets me move at startup speed 
+          while maintaining defense-grade quality. The result? Projects that used to take a year now 
+          ship in months.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills" class="py-24 px-6 bg-navy-800/30">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Tech Stack</h2>
+        <div class="w-20 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto mb-4 rounded-full"></div>
+        <p class="text-gray-400">Tools and technologies I work with</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Object.entries(skills).map(([category, items]) => (
+          <div class={`reveal p-6 rounded-xl border bg-gradient-to-br backdrop-blur-sm ${categoryColors[category]}`}>
+            <h3 class="text-white font-semibold text-lg mb-4">{category}</h3>
+            <div class="flex flex-wrap gap-2">
+              {items.map((skill: string) => (
+                <span class="tech-card px-3 py-1.5 text-sm bg-white/5 border border-white/10 rounded-lg text-gray-300">
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Featured Projects</h2>
+        <div class="w-20 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto mb-4 rounded-full"></div>
+        <p class="text-gray-400">Real-world problems, modern solutions</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        {projects.map((project) => (
+          <div class="reveal card-glow p-8 rounded-xl bg-navy-800/50 border border-white/5 backdrop-blur-sm">
+            <div class="text-4xl mb-4">{project.icon}</div>
+            <h3 class="text-xl font-bold text-white mb-3">{project.title}</h3>
+            <p class="text-gray-400 mb-6 leading-relaxed">{project.desc}</p>
+            <div class="flex flex-wrap gap-2">
+              {project.tech.map((t: string) => (
+                <span class="px-3 py-1 text-xs font-mono bg-blue-500/10 text-blue-300 border border-blue-500/20 rounded-full">
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="services" class="py-24 px-6 bg-navy-800/30">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">What I Do</h2>
+        <div class="w-20 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto mb-4 rounded-full"></div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {services.map((s) => (
+          <div class="reveal card-glow p-6 rounded-xl bg-navy-800/50 border border-white/5 text-center">
+            <div class="text-4xl mb-4">{s.icon}</div>
+            <h3 class="text-white font-semibold mb-2">{s.title}</h3>
+            <p class="text-gray-400 text-sm">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Metrics -->
+  <section class="py-16 px-6">
+    <div class="max-w-4xl mx-auto reveal">
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-8 text-center">
+        <div>
+          <div class="text-4xl font-bold text-blue-400 mb-1">17+</div>
+          <div class="text-gray-400 text-sm">Years Experience</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold text-cyan-400 mb-1">30K+</div>
+          <div class="text-gray-400 text-sm">Lines of Legacy Code Migrated</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold text-purple-400 mb-1">OCP</div>
+          <div class="text-gray-400 text-sm">Oracle Certified Professional</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold text-emerald-400 mb-1">Active</div>
+          <div class="text-gray-400 text-sm">Active Security Clearance</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="py-24 px-6 bg-navy-800/30">
+    <div class="max-w-2xl mx-auto">
+      <div class="text-center mb-12 reveal">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Get In Touch</h2>
+        <div class="w-20 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto mb-4 rounded-full"></div>
+        <p class="text-gray-400">Have a project in mind? Let's talk.</p>
+      </div>
+
+      <form action="https://formspree.io/f/your-form-id" method="POST" class="reveal space-y-6">
+        <div class="grid sm:grid-cols-2 gap-6">
+          <input type="text" name="name" placeholder="Name" required
+            class="w-full px-4 py-3 bg-navy-900/80 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none transition-colors" />
+          <input type="email" name="email" placeholder="Email" required
+            class="w-full px-4 py-3 bg-navy-900/80 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none transition-colors" />
+        </div>
+        <input type="text" name="subject" placeholder="Subject"
+          class="w-full px-4 py-3 bg-navy-900/80 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none transition-colors" />
+        <textarea name="message" placeholder="Message" rows="5" required
+          class="w-full px-4 py-3 bg-navy-900/80 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none transition-colors resize-none"></textarea>
+        <button type="submit"
+          class="w-full px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-all hover:shadow-lg hover:shadow-blue-500/25">
+          Send Message
+        </button>
+      </form>
+
+      <div class="flex justify-center gap-8 mt-12 reveal">
+        <a href="mailto:justinbundrick@gmail.com" class="text-gray-400 hover:text-blue-400 transition-colors" aria-label="Email">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"/><path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"/></svg>
+        </a>
+        <a href="https://linkedin.com/in/justinbundrick" target="_blank" class="text-gray-400 hover:text-blue-400 transition-colors" aria-label="LinkedIn">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="https://github.com/justinbundrick" target="_blank" class="text-gray-400 hover:text-blue-400 transition-colors" aria-label="GitHub">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        </a>
+      </div>
+
+      <p class="text-center text-gray-500 text-sm mt-8 reveal">Perry, Georgia</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 px-6 border-t border-white/5">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+      <p class="text-gray-500 text-sm">&copy; 2026 Justin Bundrick. All rights reserved.</p>
+      <div class="flex gap-6">
+        <a href="https://linkedin.com/in/justinbundrick" target="_blank" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">LinkedIn</a>
+        <a href="https://github.com/justinbundrick" target="_blank" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">GitHub</a>
+        <a href="mailto:justinbundrick@gmail.com" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">Email</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Typing animation
+    const phrases = [
+      "I build full-stack applications.",
+      "I wrangle Oracle databases.",
+      "I ship iOS apps.",
+      "I migrate legacy systems.",
+      "I automate everything.",
+    ];
+
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const typedEl = document.getElementById('typed-text')!;
+
+    function type() {
+      const current = phrases[phraseIndex];
+      
+      if (isDeleting) {
+        typedEl.textContent = current.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        typedEl.textContent = current.substring(0, charIndex + 1);
+        charIndex++;
+      }
+
+      let delay = isDeleting ? 30 : 60;
+
+      if (!isDeleting && charIndex === current.length) {
+        delay = 2000;
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        delay = 500;
+      }
+
+      setTimeout(type, delay);
+    }
+
+    type();
+
+    // Scroll reveal
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+    // Mobile menu
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    menuBtn?.addEventListener('click', () => menu?.classList.toggle('hidden'));
+    menu?.querySelectorAll('a').forEach((a) =>
+      a.addEventListener('click', () => menu?.classList.add('hidden'))
+    );
+  </script>
+</Layout>
