@@ -1,0 +1,165 @@
+---
+import Layout from './Layout.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+}
+
+const { title, description, pubDate, updatedDate } = Astro.props;
+
+// Reading time estimate from word count
+const rawContent = await Astro.slots.render('default');
+const wordCount = rawContent.replace(/<[^>]*>/g, '').split(/\s+/).length;
+const readingTime = Math.max(1, Math.ceil(wordCount / 250));
+
+const formattedDate = pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const formattedUpdated = updatedDate?.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const currentUrl = Astro.url.href;
+---
+
+<Layout title={`${title} — Justin Bundrick`} description={description}>
+  <nav class="fixed top-0 w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="/" class="font-mono font-bold text-lg text-blue-400 hover:text-blue-300 transition-colors">
+        &lt;JB /&gt;
+      </a>
+      <div class="flex gap-8 text-sm text-gray-400">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <a href="/blog" class="text-white">Blog</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-32 pb-24 px-6">
+    <article class="max-w-2xl mx-auto">
+      <!-- Back link -->
+      <a href="/blog" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-blue-400 transition-colors mb-8">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Back to Blog
+      </a>
+
+      <!-- Header -->
+      <header class="mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">{title}</h1>
+        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-400">
+          <span>Justin Bundrick</span>
+          <span class="text-gray-600">·</span>
+          <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+          <span class="text-gray-600">·</span>
+          <span>{readingTime} min read</span>
+        </div>
+        {formattedUpdated && (
+          <p class="text-sm text-gray-500 mt-2">Updated {formattedUpdated}</p>
+        )}
+      </header>
+
+      <!-- Content -->
+      <div class="prose">
+        <slot />
+      </div>
+
+      <!-- Footer -->
+      <footer class="mt-16 pt-8 border-t border-white/10">
+        <div class="flex items-center justify-between">
+          <a href="/blog" class="text-sm text-gray-400 hover:text-blue-400 transition-colors">
+            ← All Posts
+          </a>
+          <button
+            id="copy-link"
+            class="inline-flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/10 hover:border-white/30 rounded-lg transition-all"
+            data-url={currentUrl}
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+            </svg>
+            Copy Link
+          </button>
+        </div>
+      </footer>
+    </article>
+  </main>
+
+  <footer class="py-8 px-6 border-t border-white/5">
+    <div class="max-w-6xl mx-auto text-center">
+      <p class="text-gray-500 text-sm">&copy; 2026 Justin Bundrick</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('copy-link')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      const url = btn.dataset.url || window.location.href;
+      await navigator.clipboard.writeText(url);
+      const original = btn.innerHTML;
+      btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Copied!`;
+      setTimeout(() => { btn.innerHTML = original; }, 2000);
+    });
+  </script>
+</Layout>
+
+<style is:global>
+  .prose {
+    @apply text-gray-300 leading-relaxed;
+  }
+  .prose h1 {
+    @apply text-2xl font-bold text-white mt-12 mb-4;
+  }
+  .prose h2 {
+    @apply text-xl font-bold text-white mt-10 mb-4;
+  }
+  .prose h3 {
+    @apply text-lg font-semibold text-white mt-8 mb-3;
+  }
+  .prose p {
+    @apply mb-6 text-base leading-relaxed;
+  }
+  .prose a {
+    @apply text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors;
+  }
+  .prose ul, .prose ol {
+    @apply mb-6 pl-6;
+  }
+  .prose ul {
+    @apply list-disc;
+  }
+  .prose ol {
+    @apply list-decimal;
+  }
+  .prose li {
+    @apply mb-2;
+  }
+  .prose blockquote {
+    @apply border-l-2 border-blue-500/50 pl-4 italic text-gray-400 my-6;
+  }
+  .prose code {
+    @apply font-mono text-sm bg-white/5 px-1.5 py-0.5 rounded text-cyan-300;
+  }
+  .prose pre {
+    @apply bg-navy-800/80 border border-white/5 rounded-lg p-4 mb-6 overflow-x-auto;
+  }
+  .prose pre code {
+    @apply bg-transparent px-0 py-0;
+  }
+  .prose img {
+    @apply rounded-lg my-8;
+  }
+  .prose hr {
+    @apply border-white/10 my-8;
+  }
+</style>
