@@ -126,4 +126,4 @@ If your organization is sitting on legacy ATLAS code — or any legacy test code
 
 The tools exist. The process works. You just need someone who's already made all the mistakes.
 
-I've made plenty. [Let's talk.](https://justinbundrick.dev/contact)
+I've made plenty. [Let's talk.](https://justinbundrick.dev/#contact)
