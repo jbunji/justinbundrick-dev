@@ -57,7 +57,7 @@ When you pitch modernization in a defense environment, the resistance rarely com
 
 **Legacy IT staff** resist because modernizing threatens to make their specialized skill sets obsolete. If you're the only person who understands the ColdFusion codebase, a migration to React isn't an upgrade — it's a pink slip. Their gatekeeper status is their job security, and they know it.
 
-**Leadership and security teams** push back from fear. Not fear of technology — fear of failure. To a CISO or agency head, an outdated but known system feels safer than the unknown attack surfaces of a modern cloud environment. The calculus is simple: nobody gets fired for maintaining the status quo, but a botched migration that takes a system offline? That's career-ending.
+**Leadership and security teams** push back from fear. Not fear of technology — fear of failure. To a program director or authorizing official, an outdated but known system feels safer than the unknown attack surfaces of a modern cloud environment. The calculus is simple: nobody gets fired for maintaining the status quo, but a botched migration that takes a system offline? That's career-ending.
 
 To win these stakeholders, you can't sell the technology. You have to **reframe the risk**. The status quo isn't safe — it's a ticking clock. Legacy staff are retiring. Security vulnerabilities are accumulating. The cost of maintaining the old system is growing every year. You have to prove that *not* modernizing is now the riskier choice.
 
