@@ -32,6 +32,9 @@ const currentUrl = Astro.url.href;
 ---
 
 <Layout title={`${title} — Justin Bundrick`} description={description}>
+  <!-- Reading progress bar -->
+  <div id="progress-bar" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-blue-500 to-cyan-400 z-[60] transition-[width] duration-100 ease-linear shadow-[0_0_8px_rgba(59,130,246,0.5)]" style="width: 0%"></div>
+
   <nav class="fixed top-0 w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
     <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
       <a href="/" class="font-mono font-bold text-lg text-blue-400 hover:text-blue-300 transition-colors">
@@ -55,7 +58,7 @@ const currentUrl = Astro.url.href;
       </a>
 
       <!-- Header -->
-      <header class="mb-12">
+      <header class="mb-12 reveal">
         <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">{title}</h1>
         <div class="flex flex-wrap items-center gap-4 text-sm text-gray-400">
           <span>Justin Bundrick</span>
@@ -102,6 +105,31 @@ const currentUrl = Astro.url.href;
   </footer>
 
   <script>
+    // Reading progress bar
+    function initProgress() {
+      const bar = document.getElementById('progress-bar');
+      if (!bar) return;
+      function update() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    }
+    initProgress();
+
+    // Scroll-triggered reveal animations
+    function initReveals() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.reveal, .prose h2').forEach(el => observer.observe(el));
+    }
+    initReveals();
+
     document.getElementById('copy-link')?.addEventListener('click', async (e) => {
       const btn = e.currentTarget as HTMLButtonElement;
       const url = btn.dataset.url || window.location.href;
@@ -114,6 +142,17 @@ const currentUrl = Astro.url.href;
 </Layout>
 
 <style is:global>
+  /* Scroll reveal animations */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   .prose {
     @apply text-gray-300 leading-relaxed;
   }
@@ -122,6 +161,13 @@ const currentUrl = Astro.url.href;
   }
   .prose h2 {
     @apply text-xl font-bold text-white mt-10 mb-4;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .prose h2.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
   .prose h3 {
     @apply text-lg font-semibold text-white mt-8 mb-3;
