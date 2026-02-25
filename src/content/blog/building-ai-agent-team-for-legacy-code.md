@@ -39,7 +39,7 @@ I approached it the same way you'd staff a software development team. You don't 
 
 **The Migrator** handles fresh translations — new files that haven't been converted yet. It takes the original legacy source, the project's style guide and architectural rules, and produces a first-pass migration. It's the starting point, not the finish line.
 
-**Me.** I'm the orchestrator. I don't let my own context get polluted with the fine-grained details of each fix. Instead, I drive the pipeline — reviewing the Auditor's findings, steering the Fixer's priorities, deciding when a file needs another pass, and making the judgment calls that require domain expertise no model has.
+**Me.** I'm the orchestrator. I don't let my own context get polluted with the fine-grained details of each fix. Instead, I drive the pipeline — reviewing the Auditor's findings, steering the Fixer's priorities, deciding when a file needs another pass, and making the engineering judgment calls. I'm not a hardware test engineer by trade. I'm a software engineer with seventeen years of experience managing complex systems, and that's exactly the skill set the orchestrator role demands: knowing how to learn a domain fast, ask the right questions, and keep a team moving in the right direction.
 
 ## The Pipeline
 
@@ -51,7 +51,7 @@ Here's how a file moves through the system:
 
 **Step 3 — Fix.** The Fixer takes the audit report and applies every correction. It works fast, iterating through fixes and recompiling until the build is clean. This is where the volume happens — dozens of fixes per file, often in minutes.
 
-**Step 4 — Verify.** I review the output. I check the Auditor's logic. I spot-check hardware mappings against the source documentation. If something doesn't add up, I send it back for another audit cycle.
+**Step 4 — Verify.** I review the output. I check the Auditor's logic. I spot-check the migrated code against the source documentation — cross-referencing what was intended with what was produced. If something doesn't add up, I send it back for another audit cycle. You don't need to be a domain expert to catch a mismatch between "the original says 16 pins" and "the migration says 1 pin." You need to be methodical.
 
 **Step 5 — Ship.** The file gets committed, the build gets tested, and we move to the next one.
 
@@ -65,7 +65,7 @@ The Auditor never writes code, so its context stays clean. It can hold the full 
 
 The Fixer never makes architectural decisions, so it stays fast. It gets a clear list of changes and executes them. No ambiguity, no context drift, no wasted tokens on re-understanding the problem. When you ask a coding model to *only code*, it codes incredibly well.
 
-And I never get buried in individual line edits, so I can keep the overall quality bar high and make the judgment calls that require seventeen years of domain experience.
+And I never get buried in individual line edits, so I can keep the overall quality bar high and make the engineering decisions that matter — process design, quality gates, and knowing when something doesn't smell right even if I can't immediately explain why.
 
 Each agent operates within a narrow cognitive scope, using a model matched to that scope. Heavy reasoning where reasoning matters. Fast execution where speed matters. Human judgment where experience matters.
 
@@ -83,7 +83,7 @@ The subtlest issues weren't syntax errors or even logic errors in the traditiona
 
 In hardware test code, a measurement might be taken at one point and used pages later in a comparison. If the migration preserves the measurement logic but puts the result in the wrong scope, the test will *run* fine — it just won't test what it's supposed to test. The signal path looks right. The code compiles. But the physics is wrong.
 
-These are the bugs that keep test engineers up at night, because they're invisible to anyone who doesn't deeply understand both the code *and* the hardware. And this is exactly why the Auditor earned its keep — cross-referencing every measurement against the original source, flagging mismatches that a human reviewer could easily miss in a file with hundreds of test procedures.
+These are the bugs that keep test engineers up at night, because they're invisible in a casual code review. You have to systematically compare the migration output against the original source, line by line, context by context. That's exactly why the Auditor earned its keep — it never gets tired of cross-referencing, and it catches mismatches that a human reviewer could easily miss on page 47 of a 60-page file.
 
 But here's the honest truth: the agents couldn't always differentiate between a clean, simple solution and an over-engineered one. Sometimes the Fixer would produce a technically correct but unnecessarily complex implementation when a straightforward approach would've been better. A human has to review the *approach*, not just the output. You have to be willing to question the agent's reasoning, not just accept it because it compiles.
 
@@ -102,6 +102,8 @@ The other thing that surprised me is how important it is to *not* let your orche
 Here's what I won't pretend: this isn't a solved problem. Multi-agent pipelines require real engineering to set up, real domain expertise to steer, and real judgment to evaluate. The agents don't know what they don't know. The Auditor can miss things. The Fixer can introduce new issues. The whole pipeline is only as good as the engineer driving it.
 
 But if you're sitting on a legacy codebase that needs to move to a modern platform, and you're staring at thousands of lines of specialized code thinking "there's no way to do this in any reasonable timeframe" — there is. It just doesn't look like one person grinding through files. It looks like building a team, assigning roles, and letting each member do what they're built for.
+
+You don't need to be a domain expert in the legacy system to orchestrate this. You need to be a good engineer — someone who knows how to design a process, validate outputs, learn fast, and ask the right questions. The agents bring the tireless execution. You bring the judgment.
 
 Including you.
 
