@@ -1,47 +1,62 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import '../../styles/global.css';
 ---
-<Layout title="SubSentry — Terms of Service">
-  <div class="max-w-2xl mx-auto px-5 py-12">
-    <h1 class="text-3xl font-bold mb-2">Terms of Service</h1>
-    <p class="text-gray-400 mb-8">Last updated: March 6, 2026</p>
+<Layout title="SubSentry — Terms of Service" description="SubSentry terms of service.">
+  <div class="max-w-2xl mx-auto px-5 py-16">
+    <!-- Back link + header -->
+    <a href="/subsentry" class="text-white/30 hover:text-white text-sm transition mb-8 inline-flex items-center gap-1">
+      ← Back to SubSentry
+    </a>
+    
+    <h1 class="text-3xl font-bold text-white mt-6 mb-2">Terms of Service</h1>
+    <p class="text-white/30 mb-10">Last updated: March 6, 2026</p>
 
-    <p class="text-gray-300 mb-4">By using SubSentry ("the App"), you agree to these terms.</p>
+    <p class="text-white/60 mb-6 leading-relaxed">By using SubSentry ("the App"), you agree to these terms.</p>
 
-    <h2 class="text-xl font-semibold mt-8 mb-3">1. The Service</h2>
-    <p class="text-gray-300 mb-4">SubSentry helps you track and manage subscriptions. The app provides tools for manual and AI-assisted subscription tracking, spending analytics, and renewal reminders. SubSentry does <strong class="text-white">not</strong> cancel subscriptions on your behalf or access your bank accounts.</p>
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">1. The Service</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">SubSentry helps you track and manage subscriptions. The app provides tools for manual and AI-assisted subscription tracking, spending analytics, and renewal reminders. SubSentry does <strong class="text-white/90">not</strong> cancel subscriptions on your behalf or access your bank accounts.</p>
 
-    <h2 class="text-xl font-semibold mt-8 mb-3">2. Accounts</h2>
-    <p class="text-gray-300 mb-4">You may sign in with Apple, Google, or email. You are responsible for maintaining the security of your account. You must be at least 13 years old to use the App.</p>
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">2. Accounts</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">You may sign in with Apple, Google, or email. You are responsible for maintaining the security of your account. You must be at least 13 years old to use the App.</p>
 
-    <h2 class="text-xl font-semibold mt-8 mb-3">3. Subscriptions & Purchases</h2>
-    <p class="text-gray-300 mb-4">SubSentry offers a free tier and optional premium features via in-app purchase:</p>
-    <ul class="list-disc list-inside text-gray-300 mb-4 space-y-1">
-      <li><strong class="text-white">Monthly Premium:</strong> $4.99/month with a 7-day free trial</li>
-      <li><strong class="text-white">Annual Premium:</strong> $29.99/year with a 7-day free trial</li>
-      <li><strong class="text-white">Lifetime Premium:</strong> $39.99 one-time purchase</li>
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">3. Subscriptions & Purchases</h2>
+    <p class="text-white/60 mb-4 leading-relaxed">SubSentry offers a free tier and optional premium features via in-app purchase:</p>
+    <ul class="list-disc list-inside text-white/60 mb-4 space-y-2 leading-relaxed">
+      <li><strong class="text-white/90">Monthly Premium:</strong> $4.99/month with a 7-day free trial</li>
+      <li><strong class="text-white/90">Annual Premium:</strong> $29.99/year with a 7-day free trial</li>
+      <li><strong class="text-white/90">Lifetime Premium:</strong> $39.99 one-time purchase</li>
     </ul>
-    <p class="text-gray-300 mb-4">Subscriptions automatically renew unless cancelled at least 24 hours before the end of the current period. Manage or cancel in your Apple ID account settings. Payment is charged to your Apple ID at confirmation.</p>
+    <p class="text-white/60 mb-6 leading-relaxed">Subscriptions automatically renew unless cancelled at least 24 hours before the end of the current period. Manage or cancel in your Apple ID account settings. Payment is charged to your Apple ID at confirmation.</p>
 
-    <h2 class="text-xl font-semibold mt-8 mb-3">4. Free Tier</h2>
-    <p class="text-gray-300 mb-4">The free tier includes manual subscription tracking (up to 25 subscriptions), basic insights, home screen widget, and push notifications.</p>
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">4. Free Tier</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">The free tier includes manual subscription tracking (up to 25 subscriptions), basic insights, home screen widget, and push notifications.</p>
 
-    <h2 class="text-xl font-semibold mt-8 mb-3">5. Accuracy</h2>
-    <p class="text-gray-300 mb-4">SubSentry provides tools and estimates. We do not guarantee the accuracy of AI-parsed data, spending projections, or cancellation guides. Always verify with your service providers.</p>
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">5. Accuracy</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">SubSentry provides tools and estimates. We do not guarantee the accuracy of AI-parsed data, spending projections, or cancellation guides. Always verify with your service providers.</p>
 
-    <h2 class="text-xl font-semibold mt-8 mb-3">6. Your Data</h2>
-    <p class="text-gray-300 mb-4">You own your data. We store it on your device and (optionally) in your iCloud account. See our <a href="privacy-policy" class="text-blue-400 hover:underline">Privacy Policy</a> for details.</p>
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">6. Your Data</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">You own your data. We store it on your device and (optionally) in your iCloud account. See our <a href="/subsentry/privacy-policy" class="text-blue-400 hover:text-blue-300 transition">Privacy Policy</a> for details.</p>
 
-    <h2 class="text-xl font-semibold mt-8 mb-3">7. Acceptable Use</h2>
-    <p class="text-gray-300 mb-4">Don't use SubSentry for anything illegal, to reverse-engineer the app, or to abuse our AI features. We reserve the right to terminate accounts that violate these terms.</p>
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">7. Acceptable Use</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">Don't use SubSentry for anything illegal, to reverse-engineer the app, or to abuse our AI features. We reserve the right to terminate accounts that violate these terms.</p>
 
-    <h2 class="text-xl font-semibold mt-8 mb-3">8. Disclaimer</h2>
-    <p class="text-gray-300 mb-4">SubSentry is provided "as is" without warranty of any kind. We are not liable for missed payments, forgotten cancellations, or any financial decisions made based on information in the app.</p>
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">8. Disclaimer</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">SubSentry is provided "as is" without warranty of any kind. We are not liable for missed payments, forgotten cancellations, or any financial decisions made based on information in the app.</p>
 
-    <h2 class="text-xl font-semibold mt-8 mb-3">9. Changes</h2>
-    <p class="text-gray-300 mb-4">We may update these terms. Continued use after changes constitutes acceptance.</p>
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">9. Changes</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">We may update these terms. Continued use after changes constitutes acceptance.</p>
 
-    <h2 class="text-xl font-semibold mt-8 mb-3">10. Contact</h2>
-    <p class="text-gray-300 mb-4">Questions? Email <a href="mailto:bunjisolutions@gmail.com" class="text-blue-400 hover:underline">bunjisolutions@gmail.com</a></p>
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">10. Contact</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">Questions? Email <a href="mailto:bunjisolutions@gmail.com" class="text-blue-400 hover:text-blue-300 transition">bunjisolutions@gmail.com</a></p>
+    
+    <!-- Footer -->
+    <div class="border-t border-white/10 mt-12 pt-8 text-center">
+      <p class="text-sm">
+        <a href="/subsentry" class="text-white/30 hover:text-white transition">SubSentry</a>
+        <span class="mx-3 text-white/15">·</span>
+        <a href="/subsentry/privacy-policy" class="text-white/30 hover:text-white transition">Privacy Policy</a>
+      </p>
+    </div>
   </div>
 </Layout>
