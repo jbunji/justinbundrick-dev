@@ -36,18 +36,8 @@ export default async function handler(req, res) {
   
   // Auth check
   const authHeader = req.headers['authorization'];
-  if (!APP_SECRET) {
-    return res.status(500).json({ error: 'PLANTPAL_API_SECRET env var not set' });
-  }
   if (!authHeader || authHeader !== `Bearer ${APP_SECRET}`) {
-    return res.status(401).json({ 
-      error: 'Unauthorized',
-      debug: {
-        hasHeader: !!authHeader,
-        secretLength: APP_SECRET?.length,
-        headerPrefix: authHeader?.substring(0, 10)
-      }
-    });
+    return res.status(401).json({ error: 'Unauthorized' });
   }
   
   const { message, context, history = [] } = req.body;
