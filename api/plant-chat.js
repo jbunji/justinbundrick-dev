@@ -2,7 +2,7 @@
 // POST /api/plant-chat
 // Body: { "message": "How do I propagate a monstera?", "context": "Monstera deliciosa", "history": [] }
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const APP_SECRET = process.env.PLANTPAL_API_SECRET;
 
 const SYSTEM_PROMPT = `You are PlantPal's plant expert assistant. You help users with:
@@ -69,14 +69,16 @@ export default async function handler(req, res) {
   messages.push({ role: 'user', content: message });
   
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
+        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+        'HTTP-Referer': 'https://justinbundrick.dev',
+        'X-Title': 'PlantPal'
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.0-flash-001',
         messages,
         max_tokens: 500,
         temperature: 0.7
