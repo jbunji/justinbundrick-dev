@@ -7,7 +7,9 @@ tags: ["indie-dev", "ios", "ai", "app-store", "side-project"]
 
 # From Apple Rejection to First Paying Customer in 21 Days
 
-Three weeks ago, I had zero apps on the App Store. No TikTok account. No marketing experience. And honestly, no idea if anyone would ever pay for something I built.
+I launched HabitForge back in October. It sat there for months — a few downloads, zero revenue, zero marketing. I'd built it and forgotten about it.
+
+Three weeks ago, I decided to stop dabbling and start shipping. No TikTok account. No marketing experience. And honestly, no idea if anyone would ever pay for something I built.
 
 Today I have 4 live apps, 250+ downloads, and my first paying customer — a complete stranger who found my app, used it for a few days, hit the free tier limit, and decided it was worth $4.99/month.
 
