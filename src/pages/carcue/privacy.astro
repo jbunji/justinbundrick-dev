@@ -1,0 +1,58 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/global.css';
+---
+<Layout title="CarCue — Privacy Policy" description="CarCue privacy policy. Your vehicle data stays private.">
+  <div class="max-w-2xl mx-auto px-5 py-16">
+    <a href="/" class="text-white/30 hover:text-white text-sm transition mb-8 inline-flex items-center gap-1">
+      ← Back to Home
+    </a>
+    
+    <h1 class="text-3xl font-bold text-white mt-6 mb-2">Privacy Policy — CarCue</h1>
+    <p class="text-white/30 mb-10">Last updated: March 24, 2026</p>
+
+    <p class="text-white/60 mb-6 leading-relaxed">CarCue is a car maintenance tracker app developed by Justin Bundrick. Your privacy matters. Here's exactly what we do and don't do with your data.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Data Stored On Your Device</h2>
+    <ul class="list-disc list-inside text-white/60 mb-6 space-y-2 leading-relaxed">
+      <li>Vehicle details (year, make, model, trim, engine, VIN, odometer)</li>
+      <li>Service records, costs, and shop names</li>
+      <li>Fuel entries, MPG calculations, and cost tracking</li>
+      <li>Maintenance reminders and schedules</li>
+      <li>Documents and photos (insurance, registration, receipts)</li>
+      <li>App preferences and settings</li>
+    </ul>
+    <p class="text-white/60 mb-6 leading-relaxed">All of this data is stored locally on your device using Apple's Core Data framework. If you have iCloud enabled, your data syncs across your Apple devices via Apple's CloudKit — we never see or access your iCloud data.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">AI Mechanic</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">When you use the AI Mechanic chat feature, your message and basic vehicle context (year, make, model, mileage, and recent service summary) are sent to our server to generate a response. This data is transmitted securely over HTTPS and is <strong>not stored on our servers</strong> — it is processed in real-time and discarded. We use third-party AI providers (Google Gemini via OpenRouter) to generate responses. No personally identifiable information (name, email, exact location) is ever sent.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Location Data</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">CarCue requests location access only for the "Find Shops" feature, which uses Apple's MapKit to find nearby auto repair shops. Your location is processed on-device by Apple's frameworks and is <strong>never sent to our servers</strong>. Location permission can be revoked at any time in iOS Settings.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Camera and Photo Library</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">CarCue requests camera access for the VIN scanner and receipt scanner features. Photo library access is used for importing service receipts and vehicle documents. These permissions are used only for the stated purposes and can be revoked at any time in iOS Settings.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Data We Do NOT Collect</h2>
+    <ul class="list-disc list-inside text-white/60 mb-6 space-y-2 leading-relaxed">
+      <li>We do not collect personal information (name, email, phone number)</li>
+      <li>We do not track your location beyond the Find Shops feature</li>
+      <li>We do not use analytics or tracking SDKs</li>
+      <li>We do not sell or share any data with third parties</li>
+      <li>We do not display ads</li>
+      <li>We do not store your AI Mechanic conversations on any server</li>
+    </ul>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Subscriptions</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">CarCue Premium is available as a monthly or yearly auto-renewable subscription. Payment is processed entirely by Apple through the App Store. We do not have access to your payment information. You can manage or cancel subscriptions in your Apple ID settings at any time.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Children's Privacy</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">CarCue does not knowingly collect personal information from children under 13. The app does not require account creation or personal information to use.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Changes to This Policy</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">We may update this policy from time to time. Changes will be reflected on this page with an updated date.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Contact</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">Questions? Reach out at <a href="mailto:justinbundrick@gmail.com" class="text-amber-400 hover:text-amber-300 underline">justinbundrick@gmail.com</a>.</p>
+  </div>
+</Layout>
