@@ -53,6 +53,36 @@ const apps = [
     storeUrl: 'https://apps.apple.com/app/id6760043465',
     features: ['Home Task Library', 'Smart Reminders', 'Maintenance History', 'Seasonal Schedules'],
   },
+  {
+    name: 'MealMap',
+    tagline: 'Plan meals, not last-minute takeout',
+    description: 'AI-powered meal planning with recipe imports, grocery lists, and nutrition tracking. Plan your week in minutes.',
+    icon: '/icons/mealmap.png',
+    color: 'from-red-500/20 to-rose-600/10 border-red-500/30',
+    status: 'coming',
+    storeUrl: '#',
+    features: ['AI Meal Plans', 'Recipe Import', 'Grocery Lists', 'Nutrition Tracking'],
+  },
+  {
+    name: 'CarCue',
+    tagline: 'Never miss an oil change again',
+    description: 'Track maintenance for every vehicle. VIN lookup, service reminders, fuel tracking, and full maintenance history.',
+    icon: '/icons/carcue.png',
+    color: 'from-sky-500/20 to-blue-600/10 border-sky-500/30',
+    status: 'coming',
+    storeUrl: '#',
+    features: ['VIN Lookup', 'Service Reminders', 'Fuel Tracking', 'Maintenance History'],
+  },
+  {
+    name: 'TripStash',
+    tagline: 'Pack smart, travel light',
+    description: 'Smart packing lists that adapt to your destination, weather, and trip type. Never forget your charger again.',
+    icon: '/icons/tripstash.png',
+    color: 'from-teal-500/20 to-cyan-600/10 border-teal-500/30',
+    status: 'coming',
+    storeUrl: '#',
+    features: ['Smart Packing Lists', 'Weather-Aware', 'Trip Templates', 'Share Lists'],
+  },
 ];
 
 const liveApps = apps.filter(a => a.status === 'live');
