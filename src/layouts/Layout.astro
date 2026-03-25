@@ -32,5 +32,9 @@ const { title, description = "Justin Bundrick — Software Engineer specializing
   </head>
   <body class="grid-pattern">
     <slot />
+    <script>
+      import { inject } from '@vercel/analytics';
+      inject();
+    </script>
   </body>
 </html>
