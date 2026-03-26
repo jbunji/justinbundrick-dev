@@ -56,11 +56,11 @@ export default async function handler(req, res) {
     { role: 'system', content: SYSTEM_PROMPT }
   ];
   
-  // Add plant context if available
+  // Add plant context if available (could be specific plant or full collection)
   if (context) {
     messages.push({
       role: 'system', 
-      content: `The user is currently looking at: ${context}. Tailor your advice to this plant when relevant.`
+      content: `Here is the user's plant data from their app:\n${context}\n\nUse this data to give personalized answers. When they ask "which plants need water" or "what should I do today", reference their ACTUAL plants by name. Be specific and personal.`
     });
   }
   
