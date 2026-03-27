@@ -1,0 +1,56 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/global.css';
+---
+<Layout title="MealMap — Privacy Policy" description="MealMap privacy policy. Your meal data stays private.">
+  <div class="max-w-2xl mx-auto px-5 py-16">
+    <a href="/" class="text-white/30 hover:text-white text-sm transition mb-8 inline-flex items-center gap-1">
+      ← Back to Home
+    </a>
+    
+    <h1 class="text-3xl font-bold text-white mt-6 mb-2">Privacy Policy — MealMap</h1>
+    <p class="text-white/30 mb-10">Last updated: March 26, 2026</p>
+
+    <p class="text-white/60 mb-6 leading-relaxed">MealMap is an AI-powered meal planning app developed by Justin Bundrick / BunjiSolutions. Your privacy matters. Here's exactly what we do and don't do with your data.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Data We Collect</h2>
+    
+    <h3 class="text-lg font-semibold text-white/90 mt-6 mb-3">Data Stored On Your Device</h3>
+    <ul class="list-disc list-inside text-white/60 mb-6 space-y-2 leading-relaxed">
+      <li>Meals, recipes, ingredients, and notes you enter</li>
+      <li>Meal plans, weekly calendars, and themed night settings</li>
+      <li>Grocery lists and shopping history</li>
+      <li>Food preferences, dietary exclusions, and meal ratings</li>
+      <li>App preferences and settings</li>
+    </ul>
+    <p class="text-white/60 mb-6 leading-relaxed">All of this data is stored locally on your device. If you enable iCloud, your data syncs across your Apple devices via Apple's CloudKit — we never see or access your iCloud data.</p>
+
+    <h3 class="text-lg font-semibold text-white/90 mt-6 mb-3">AI Features (Chef AI, Snap to Meal, Auto Plan)</h3>
+    <p class="text-white/60 mb-6 leading-relaxed">When you use AI-powered features, your messages and meal data are sent to our server (hosted on Vercel) which forwards them to OpenRouter (an AI API provider) for processing. We send only the minimum data needed: your message text, relevant meal/preference context, and conversation history (limited to 6 recent messages). Photos sent via Snap to Meal are processed for ingredient identification only.</p>
+    <p class="text-white/60 mb-6 leading-relaxed">We do not store your conversations, photos, or personal data on our servers. Data is processed in transit and discarded. Please review <a href="https://openrouter.ai/privacy" class="text-red-400 hover:text-red-300 underline">OpenRouter's privacy policy</a> for their data handling practices.</p>
+
+    <h3 class="text-lg font-semibold text-white/90 mt-6 mb-3">Camera and Photo Library</h3>
+    <p class="text-white/60 mb-6 leading-relaxed">MealMap requests camera or photo library access only when you use Snap to Meal or recipe card scanning. Photos are used solely for AI analysis and are not stored on any server after processing.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Data We Don't Collect</h2>
+    <ul class="list-disc list-inside text-white/60 mb-6 space-y-2 leading-relaxed">
+      <li>We don't collect your name, email, or personal information</li>
+      <li>We don't track your location</li>
+      <li>We don't use advertising or ad tracking</li>
+      <li>We don't sell or share your data with third parties</li>
+      <li>We don't use analytics SDKs or fingerprinting</li>
+    </ul>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">In-App Purchases</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">Purchases are handled entirely by Apple through the App Store. We never see your payment information, credit card details, or Apple ID.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Children's Privacy</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">MealMap is not directed at children under 13. We do not knowingly collect personal information from children.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Changes to This Policy</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">We may update this policy from time to time. Changes will be posted on this page with an updated "Last updated" date.</p>
+
+    <h2 class="text-xl font-semibold text-white mt-10 mb-4">Contact</h2>
+    <p class="text-white/60 mb-6 leading-relaxed">Questions? Email <a href="mailto:justinbundrick@gmail.com" class="text-red-400 hover:text-red-300 underline">justinbundrick@gmail.com</a></p>
+  </div>
+</Layout>
