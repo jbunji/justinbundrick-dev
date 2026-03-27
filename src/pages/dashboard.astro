@@ -111,6 +111,7 @@ const dashboardData = {
       { sub: 'r/getdisciplined', date: 'Mar 18' },
       { sub: 'r/SideProject', date: 'Mar 22' },
       { sub: 'r/iOSProgramming', date: 'Mar 24' },
+      { sub: 'r/VibeCodersNest', date: 'Mar 26' },
     ],
     plantpal: [],
     chorequest: [],
@@ -119,6 +120,39 @@ const dashboardData = {
     carcue: [],
     mealmap: [],
     tripstash: [],
+  },
+
+  // Per-app marketing targets (subreddits, platforms, campaigns)
+  marketingTargets: {
+    habitforge: {
+      reddit: ['r/getdisciplined ✅', 'r/SideProject ✅', 'r/iOSProgramming ✅', 'r/VibeCodersNest ✅', 'r/habittracking', 'r/productivity'],
+      other: ['Product Hunt (Mar 31)', 'Hacker News Show HN'],
+    },
+    mealmap: {
+      reddit: ['r/MealPrepSunday (HIGH conversion)', 'r/EatCheapAndHealthy', 'r/Cooking'],
+      other: ['Product Hunt', 'Hacker News', '#FoodTok daily TikToks'],
+      notes: '⚡ Lead with Snap to Meal in ALL content. Drop lifetime to $49 for launch.',
+    },
+    plantpal: {
+      reddit: ['r/houseplants', 'r/IndoorGarden'],
+      other: ['#PlantTok TikToks'],
+    },
+    chorequest: {
+      reddit: ['r/Parenting', 'r/Mommit'],
+      other: ['#ParentingTok', 'Facebook parent groups'],
+    },
+    upkeepy: {
+      reddit: ['r/homeowners', 'r/homeimprovement'],
+      other: ['Spring maintenance value posts'],
+    },
+    subsentry: {
+      reddit: ['r/personalfinance', 'r/Frugal'],
+      other: ['#MoneyTok TikToks'],
+    },
+    carcue: {
+      reddit: ['r/cars', 'r/MechanicAdvice', 'r/AutoDetailing'],
+      other: ['#CarTok TikToks'],
+    },
   },
   
   todayActions: [
@@ -139,9 +173,12 @@ const dashboardData = {
   ],
   
   upcomingMilestones: [
-    { event: 'Product Hunt launch', date: 'Mar 31' },
-    { event: 'r/VibeCodersNest post', date: 'Thu Mar 27' },
-    { event: 'Weekly blog', date: 'Sun Mar 29' },
+    { event: '🚀 MealMap v1.0 submit to App Store', date: 'This week' },
+    { event: '🎯 Product Hunt launch (HabitForge)', date: 'Mar 31' },
+    { event: '📝 Weekly blog', date: 'Sun Mar 29' },
+    { event: '🍽️ MealMap TikTok blitz (lead w/ Snap to Meal)', date: 'After approval' },
+    { event: '📣 MealMap Reddit: r/MealPrepSunday', date: 'Week 2 post-launch' },
+    { event: '💰 MealMap: Drop lifetime to $49 for launch', date: 'Before marketing' },
   ],
 };
 
@@ -414,6 +451,49 @@ const totalDownloads = dashboardData.apps.reduce((sum, app) => sum + app.downloa
             </div>
           </section>
         </div>
+        <!-- Marketing Targets by App -->
+        <section class="mt-6 sm:mt-8">
+          <h2 class="text-white font-bold text-lg sm:text-xl mb-4 flex items-center gap-2">
+            <span>📣</span> Marketing Targets by App
+          </h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            {Object.entries(dashboardData.marketingTargets).map(([appId, targets]) => {
+              const app = dashboardData.apps.find(a => a.id === appId);
+              if (!app) return null;
+              return (
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4 backdrop-blur-sm">
+                  <div class="flex items-center gap-2 mb-3">
+                    <img src={app.icon} alt={app.name} class="w-6 h-6 rounded-lg" />
+                    <span class="text-white font-bold text-sm">{app.name}</span>
+                    <span class={`text-xs px-2 py-0.5 rounded-full border ${getStatusBadge(app.status)}`}>{app.status}</span>
+                  </div>
+                  {targets.notes && (
+                    <div class="text-amber-400 text-xs mb-2 p-2 bg-amber-500/10 rounded-lg border border-amber-500/20">⚡ {targets.notes}</div>
+                  )}
+                  <div class="space-y-2">
+                    <div>
+                      <div class="text-white/40 text-xs font-medium mb-1">Reddit Targets:</div>
+                      <div class="flex flex-wrap gap-1">
+                        {targets.reddit.map((sub) => (
+                          <span class={`text-xs px-2 py-0.5 rounded-full ${sub.includes('✅') ? 'bg-green-500/20 text-green-400' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'}`}>{sub}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-white/40 text-xs font-medium mb-1">Other Channels:</div>
+                      <div class="flex flex-wrap gap-1">
+                        {targets.other.map((ch) => (
+                          <span class="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">{ch}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
       </div>
     </div>
   </div>
