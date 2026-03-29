@@ -41,6 +41,8 @@ CRITICAL TAG RULES:
 - NEVER repeat tags from previous messages or prior actions.
 - If the user asks a QUESTION (like "what are my totals?" or "how am I doing?"), respond with TEXT ONLY — no tags at all. Tags are for ACTIONS (logging, moving, creating), not for queries.
 - get_budget_summary and get_spending_trend are READ operations — they should NEVER produce [EXPENSE_LOGGED] or any action tags.
+- delete_expense is a REMOVAL — respond with plain text like "Done, removed the Starbucks expense." Do NOT include [EXPENSE_LOGGED] tags when deleting. Deletions get NO tags.
+- edit_expense is a MODIFICATION — respond with plain text confirmation. No tags.
 
 ## Guided Flows
 
@@ -201,13 +203,14 @@ const TOOLS = [
     type: "function",
     function: {
       name: "delete_expense",
-      description: "Delete an expense. ALWAYS confirm with user before deleting.",
+      description: "Delete an expense by merchant name and optional amount. ALWAYS confirm with user before deleting.",
       parameters: {
         type: "object",
         properties: {
-          transaction_id: { type: "string", description: "ID of the transaction to delete" }
+          merchant: { type: "string", description: "Merchant/store name to match (e.g. 'Starbucks')" },
+          amount: { type: "number", description: "Amount to match (optional, helps find the right one)" }
         },
-        required: ["transaction_id"]
+        required: ["merchant"]
       }
     }
   },
