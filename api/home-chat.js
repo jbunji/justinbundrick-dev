@@ -155,6 +155,22 @@ const TOOLS = [
   }
 ];
 
+// Simple in-memory rate limiter (resets on cold start, good enough for serverless)
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
+const RATE_LIMIT_MAX = 15; // 15 requests per minute per IP
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now - entry.windowStart > RATE_LIMIT_WINDOW_MS) {
+    rateLimitMap.set(ip, { windowStart: now, count: 1 });
+    return true;
+  }
+  entry.count++;
+  return entry.count <= RATE_LIMIT_MAX;
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -166,6 +182,12 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  // Rate limit
+  const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
+  if (!checkRateLimit(clientIP)) {
+    return res.status(429).json({ error: 'Too many requests. Try again in a minute.' });
+  }
+
   // Auth
   const authHeader = req.headers.authorization;
   if (!APP_SECRET || authHeader !== `Bearer ${APP_SECRET}`) {
@@ -174,8 +196,40 @@ export default async function handler(req, res) {
 
   const { message, context, history, memory, toolResults } = req.body;
 
-  if (!message || message.length > 1000) {
+  if (!message || typeof message !== 'string' || message.length > 1000) {
     return res.status(400).json({ error: 'Message required (max 1000 chars)' });
+  }
+
+  // Input sanitization — strip injection patterns before they reach the model
+  const INJECTION_PATTERNS = [
+    /ignore\s+(all\s+)?previous\s+instructions/i,
+    /you\s+are\s+now\s+/i,
+    /pretend\s+(to\s+be|you\s+are)/i,
+    /act\s+as\s+(if\s+you\s+are|a\s+)/i,
+    /new\s+instructions?\s*:/i,
+    /system\s*:\s*/i,
+    /\bDAN\b/,
+    /jailbreak/i,
+    /bypass\s+(your\s+)?(rules|instructions|filters|safety)/i,
+    /reveal\s+(your\s+)?(system\s+prompt|instructions|rules)/i,
+    /what\s+are\s+your\s+(system\s+)?instructions/i,
+    /output\s+(your\s+)?(system|initial)\s+prompt/i,
+    /repeat\s+(the\s+)?(text|words|instructions)\s+above/i,
+  ];
+
+  const isInjection = INJECTION_PATTERNS.some(p => p.test(message));
+  if (isInjection) {
+    return res.status(200).json({
+      type: 'response',
+      reply: "I'm your home maintenance assistant! 🏠 I can help with tasks, repairs, seasonal upkeep, and more. What needs attention?"
+    });
+  }
+
+  // Sanitize context/memory fields — reject if they contain override patterns
+  const contextStr = typeof context === 'string' ? context : '';
+  const memoryStr = typeof memory === 'string' ? memory : '';
+  if (INJECTION_PATTERNS.some(p => p.test(contextStr) || p.test(memoryStr))) {
+    return res.status(400).json({ error: 'Invalid request' });
   }
 
   // Build messages
