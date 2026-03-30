@@ -205,6 +205,15 @@ const rateLimitMap = new Map();
 const RATE_LIMIT = 30; // max requests per minute per IP
 const RATE_WINDOW = 60000; // 1 minute
 
+function timingSafeEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
 function checkRateLimit(ip) {
   const now = Date.now();
   const record = rateLimitMap.get(ip) || { count: 0, start: now };
@@ -242,9 +251,11 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   
-  // Auth
+  // Auth (constant-time comparison)
   const authHeader = req.headers['authorization'];
-  if (!authHeader || authHeader !== `Bearer ${APP_SECRET}`) {
+  const token = (authHeader || '').slice(7); // strip "Bearer "
+  const secret = APP_SECRET || '';
+  if (token.length !== secret.length || !timingSafeEqual(token, secret)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
   
