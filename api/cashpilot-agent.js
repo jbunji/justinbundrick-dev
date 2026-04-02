@@ -643,7 +643,7 @@ export default async function handler(req, res) {
 
     // Regular text response
     return res.status(200).json({
-      content: content || "I'm not sure how to respond to that.",
+      content: content || "Done! ✅",
       tool_calls: null,
     });
   } catch (error) {
