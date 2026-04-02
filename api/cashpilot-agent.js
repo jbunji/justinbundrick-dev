@@ -603,7 +603,7 @@ export default async function handler(req, res) {
     // Check for tool calls — validate against allowlist
     if (responseMessage.tool_calls && responseMessage.tool_calls.length > 0) {
       const allowedTools = new Set(TOOLS.map(t => t.function.name));
-      const toolCalls = responseMessage.tool_calls
+      let toolCalls = responseMessage.tool_calls
         .filter(tc => allowedTools.has(tc.function?.name))  // Only allowed tools
         .slice(0, 5)  // Cap at 5 tool calls per response
         .map((tc) => ({
@@ -613,6 +613,27 @@ export default async function handler(req, res) {
             arguments: tc.function.arguments,
           },
         }));
+      
+      // DEDUP: Only allow ONE create_expense per response unless amounts differ
+      const expenseCalls = toolCalls.filter(tc => tc.function.name === "create_expense");
+      if (expenseCalls.length > 1) {
+        // Keep only unique expenses (by amount + merchant)
+        const seen = new Set();
+        const uniqueExpenses = [];
+        for (const tc of expenseCalls) {
+          try {
+            const args = JSON.parse(tc.function.arguments);
+            const key = `${args.amount}-${(args.merchant || '').toLowerCase()}`;
+            if (!seen.has(key)) {
+              seen.add(key);
+              uniqueExpenses.push(tc);
+            }
+          } catch { uniqueExpenses.push(tc); }
+        }
+        // Replace expense calls with deduped ones
+        const nonExpenseCalls = toolCalls.filter(tc => tc.function.name !== "create_expense");
+        toolCalls = [...nonExpenseCalls, ...uniqueExpenses];
+      }
 
       return res.status(200).json({
         content: content,
