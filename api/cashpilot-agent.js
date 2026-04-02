@@ -562,7 +562,7 @@ export default async function handler(req, res) {
           messages: messages,
           tools: TOOLS,
           tool_choice: "auto",
-          max_tokens: 500,
+          max_tokens: 1000,
           temperature: 0.7,
         }),
       }
