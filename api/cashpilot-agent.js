@@ -312,7 +312,7 @@ const TOOLS = [
     type: "function",
     function: {
       name: "log_income",
-      description: "Record income received. Handles both W-2 paychecks and freelance/1099 payments.",
+      description: "Record a ONE-TIME income payment already received (e.g. 'I got paid $2000 today', 'client sent me $500'). Do NOT use this for recurring/monthly income — use add_income_source instead.",
       parameters: {
         type: "object",
         properties: {
