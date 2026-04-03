@@ -350,6 +350,24 @@ const TOOLS = [
   {
     type: "function",
     function: {
+      name: "create_savings_goal",
+      description: "Create a new savings goal with a target amount and optional deadline. Use when user says 'save for', 'savings goal', 'I want to save'.",
+      parameters: {
+        type: "object",
+        properties: {
+          name: { type: "string", description: "Goal name (e.g. Emergency Fund, Vacation, New Car)" },
+          target_amount: { type: "number", description: "Target savings amount in dollars" },
+          monthly_contribution: { type: "number", description: "Monthly contribution amount (optional)" },
+          deadline: { type: "string", description: "Target date in YYYY-MM-DD format (optional)" },
+          emoji: { type: "string", description: "Emoji for the goal (default 🎯)" }
+        },
+        required: ["name", "target_amount"]
+      }
+    }
+  },
+  {
+    type: "function",
+    function: {
       name: "get_budget_summary",
       description: "Get current month budget status — all categories, spent, remaining. Use when user asks 'how am I doing', 'show my budget', etc.",
       parameters: {
