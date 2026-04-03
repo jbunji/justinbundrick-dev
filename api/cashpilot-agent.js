@@ -395,6 +395,21 @@ const TOOLS = [
   {
     type: "function",
     function: {
+      name: "contribute_to_goal",
+      description: "Add money to an existing savings goal. Use when user says 'add $50 to my vacation fund', 'put money in rainy day', 'contribute to emergency fund', etc.",
+      parameters: {
+        type: "object",
+        properties: {
+          goal_name: { type: "string", description: "Name of the savings goal to add to (fuzzy match)" },
+          amount: { type: "number", description: "Dollar amount to add to the goal" }
+        },
+        required: ["goal_name", "amount"]
+      }
+    }
+  },
+  {
+    type: "function",
+    function: {
       name: "get_budget_summary",
       description: "Get current month budget status — all categories, spent, remaining. Use when user asks 'how am I doing', 'show my budget', etc.",
       parameters: {
