@@ -354,6 +354,23 @@ const TOOLS = [
   {
     type: "function",
     function: {
+      name: "add_income_source",
+      description: "Add a RECURRING income source (paycheck, freelance gig, side hustle). This is NOT for one-time income — use log_income for that. Use this when the user says 'I make $X per month from Y', 'set an income source', 'my salary is', 'I get paid $X biweekly', or describes ongoing regular income.",
+      parameters: {
+        type: "object",
+        properties: {
+          name: { type: "string", description: "Income source name (e.g. 'Day Job', 'Amazon Seller', 'Freelance Design')" },
+          amount: { type: "number", description: "Amount per pay period in dollars" },
+          frequency: { type: "string", description: "How often: weekly, biweekly, monthly", enum: ["weekly", "biweekly", "monthly"] },
+          is_w2: { type: "boolean", description: "True for W-2 employment, false for 1099/freelance/self-employed" }
+        },
+        required: ["name", "amount", "frequency"]
+      }
+    }
+  },
+  {
+    type: "function",
+    function: {
       name: "create_savings_goal",
       description: "Create a new savings goal with a target amount and optional deadline. Use when user says 'save for', 'savings goal', 'I want to save'.",
       parameters: {
