@@ -623,7 +623,7 @@ export default async function handler(req, res) {
           tools: TOOLS,
           tool_choice: "auto",
           max_tokens: 1000,
-          temperature: 0.7,
+          temperature: 0.4,  // Lower = more deterministic tool calls (fewer duplicates)
         }),
       }
     );
@@ -674,23 +674,23 @@ export default async function handler(req, res) {
           },
         }));
       
-      // DEDUP: Only allow ONE create_expense per response unless amounts differ
+      // DEDUP: Only allow ONE create_expense per response unless amounts are DIFFERENT
+      // Gemini frequently calls create_expense 2x for a single "I spent $50 at Target"
       const expenseCalls = toolCalls.filter(tc => tc.function.name === "create_expense");
       if (expenseCalls.length > 1) {
-        // Keep only unique expenses (by amount + merchant)
         const seen = new Set();
         const uniqueExpenses = [];
         for (const tc of expenseCalls) {
           try {
             const args = JSON.parse(tc.function.arguments);
-            const key = `${args.amount}-${(args.merchant || '').toLowerCase()}`;
+            // Key by AMOUNT ONLY — same amount in same response = almost certainly duplicate
+            const key = `${args.amount}`;
             if (!seen.has(key)) {
               seen.add(key);
               uniqueExpenses.push(tc);
             }
           } catch { uniqueExpenses.push(tc); }
         }
-        // Replace expense calls with deduped ones
         const nonExpenseCalls = toolCalls.filter(tc => tc.function.name !== "create_expense");
         toolCalls = [...nonExpenseCalls, ...uniqueExpenses];
       }
