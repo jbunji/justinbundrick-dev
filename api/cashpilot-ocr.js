@@ -2,30 +2,70 @@
 // POST /api/cashpilot-ocr
 // Photo → Gemini Vision → Structured expense data
 
-const EXTRACTION_PROMPT = `Analyze this image of financial data (spreadsheet, receipt, bank statement, or handwritten notes). Extract ALL expense/transaction entries you can find.
+const EXTRACTION_PROMPT = `Analyze this image of financial data (receipt, budget spreadsheet, bank statement, handwritten budget list, Excel screenshot, Google Sheets screenshot, or any financial document). Extract ALL financial data you can find.
 
-Return a JSON object with a "transactions" array. For each transaction, extract:
-- date: ISO 8601 format (YYYY-MM-DD). If only month/day, assume current year (2026).
-- amount: Dollar amount as a number (no $ sign)
-- merchant: Store/vendor name (best guess from description)
-- description: Raw text from the image for this entry
-- category: Best guess category from this list: Groceries, Dining, Gas, Household, Subscriptions, Utilities, Shopping, Entertainment, Health, Transportation, Insurance, Housing, Personal, Education, Gifts, Other
-- confidence: "high", "medium", or "low" (how sure you are about this entry)
-- isIncome: boolean (true if this looks like income/deposit, false for expenses)
+Return a JSON object with:
+- "type": The document type — one of: "receipt", "budget_spreadsheet", "bank_statement", "budget_list", or "mixed"
+- "items": Array of all financial items found (can contain different types in the same array)
+- "summary": A brief one-line summary like "Found 5 bills, 2 income sources, and 8 budget categories"
 
-Rules:
-- Skip totals/subtotals/tax lines unless they're the only amount
+For EACH item in "items", determine the TYPE and extract the appropriate fields:
+
+TYPE: "expense" (one-time transaction)
+- type: "expense"
+- amount: Dollar amount as number (no $ sign)
+- merchant: Store/vendor name
+- category: Best guess from: Groceries, Dining, Gas, Household, Subscriptions, Utilities, Shopping, Entertainment, Health, Transportation, Insurance, Housing, Personal, Education, Gifts, Other
+- date: ISO 8601 (YYYY-MM-DD). If missing, use current date (2026-04-03)
+- confidence: "high", "medium", or "low"
+
+TYPE: "bill" (recurring payment)
+- type: "bill"
+- name: Bill name (e.g., "Rent", "Electric", "Car Insurance")
+- amount: Monthly amount as number
+- due_day: Day of month (1-31)
+- frequency: "monthly", "weekly", "biweekly", "quarterly", or "annual"
+- category: Best guess category
+
+TYPE: "income" (recurring income source)
+- type: "income"
+- name: Income source name (e.g., "Paychecks", "Side Hustle", "Freelance")
+- amount: Amount per period
+- frequency: "weekly", "biweekly", "monthly", "annual"
+- is_w2: true if this looks like W-2 employment, false for 1099/contractor
+
+TYPE: "budget" (monthly budget allocation for a category)
+- type: "budget"
+- category: Category name
+- amount: Monthly budget amount
+
+TYPE: "goal" (savings goal)
+- type: "goal"
+- name: Goal name
+- amount: Target amount
+
+DETECTION RULES:
+- If you see columns like "Bill", "Due Date", "Amount" → extract as bills
+- If you see "Income", "Paycheck", "Salary" → extract as income
+- If you see "Budget", "Monthly Limit", "Allocated" → extract as budgets
+- If you see "Goal", "Savings Target" → extract as goals
+- Receipts with line items → extract as expenses
+- Bank statements → extract as expenses (use description as merchant)
+- Spreadsheet with mixed data → extract ALL types you see
+
+IMPORTANT:
+- Extract EVERY line item — don't skip rows
+- Skip totals/subtotals/grand totals
 - Skip running balances
-- If you can't determine a date, use today's date (2026-03-28)
-- If you can't determine a merchant, use the description
-- If you can't determine a category, use "Other" with confidence "low"
-- Extract EVERY line item you can see, even if some fields are uncertain
-- For receipts: extract individual items OR the total — not both (prefer individual items if legible)
-- Positive amounts for expenses, mark income with isIncome: true
+- Skip headers/labels (only extract actual data rows)
+- If uncertain about type, default to "expense"
 - Handle messy handwriting and partial data gracefully
+- For budget spreadsheets, EVERY row should become an item
 
-Return ONLY valid JSON. No markdown, no explanation, no code fences. Just the JSON object:
-{"transactions": [{"date": "2026-03-15", "amount": 67.43, "merchant": "Kroger", "description": "Groceries", "category": "Groceries", "confidence": "high", "isIncome": false}, ...]}`;
+Return ONLY valid JSON. No markdown, no explanation, no code fences.
+
+Example response:
+{"type": "budget_spreadsheet", "items": [{"type": "bill", "name": "Rent", "amount": 3000, "due_day": 1, "frequency": "monthly", "category": "Housing"}, {"type": "income", "name": "Paychecks", "amount": 975, "frequency": "weekly", "is_w2": true}, {"type": "budget", "category": "Groceries", "amount": 600}, {"type": "expense", "amount": 50, "merchant": "Target", "category": "Shopping", "date": "2026-04-03", "confidence": "high"}], "summary": "Found 1 bill, 1 income source, 1 budget, and 1 expense"}`;
 
 export default async function handler(req, res) {
   // CORS
@@ -140,30 +180,95 @@ export default async function handler(req, res) {
       });
     }
 
-    // Normalize: ensure we have a transactions array
-    let transactions;
+    // Normalize: ensure we have items array
+    let items;
     if (Array.isArray(parsed)) {
-      transactions = parsed;
+      items = parsed;
+    } else if (parsed.items && Array.isArray(parsed.items)) {
+      items = parsed.items;
     } else if (parsed.transactions && Array.isArray(parsed.transactions)) {
-      transactions = parsed.transactions;
+      // Legacy format — convert to new format
+      items = parsed.transactions.map((t) => ({
+        type: t.isIncome ? "income" : "expense",
+        ...t,
+      }));
     } else {
-      transactions = [];
+      items = [];
     }
 
-    // Validate and clean each transaction
-    transactions = transactions
-      .filter((t) => t && typeof t.amount === "number" && t.amount > 0)
-      .map((t) => ({
-        date: t.date || new Date().toISOString().split("T")[0],
-        amount: Math.round(t.amount * 100) / 100,
-        merchant: t.merchant || t.description || "Unknown",
-        description: t.description || t.merchant || "",
-        category: t.category || "Other",
-        confidence: ["high", "medium", "low"].includes(t.confidence) ? t.confidence : "low",
-        isIncome: t.isIncome === true,
-      }));
+    // Validate and clean each item based on type
+    items = items
+      .filter((item) => item && item.type && item.amount && item.amount > 0)
+      .map((item) => {
+        const cleanAmount = Math.round(item.amount * 100) / 100;
 
-    return res.status(200).json({ transactions });
+        switch (item.type) {
+          case "expense":
+            return {
+              type: "expense",
+              date: item.date || new Date().toISOString().split("T")[0],
+              amount: cleanAmount,
+              merchant: item.merchant || item.description || "Unknown",
+              description: item.description || item.merchant || "",
+              category: item.category || "Other",
+              confidence: ["high", "medium", "low"].includes(item.confidence) ? item.confidence : "low",
+            };
+
+          case "bill":
+            return {
+              type: "bill",
+              name: item.name || "Bill",
+              amount: cleanAmount,
+              due_day: typeof item.due_day === "number" ? Math.max(1, Math.min(31, item.due_day)) : 1,
+              frequency: ["monthly", "weekly", "biweekly", "quarterly", "annual"].includes(item.frequency)
+                ? item.frequency
+                : "monthly",
+              category: item.category || "Bills",
+            };
+
+          case "income":
+            return {
+              type: "income",
+              name: item.name || "Income",
+              amount: cleanAmount,
+              frequency: ["weekly", "biweekly", "monthly", "annual"].includes(item.frequency)
+                ? item.frequency
+                : "monthly",
+              is_w2: item.is_w2 === true,
+            };
+
+          case "budget":
+            return {
+              type: "budget",
+              category: item.category || "Other",
+              amount: cleanAmount,
+            };
+
+          case "goal":
+            return {
+              type: "goal",
+              name: item.name || "Goal",
+              amount: cleanAmount,
+            };
+
+          default:
+            // Unknown type — treat as expense
+            return {
+              type: "expense",
+              date: new Date().toISOString().split("T")[0],
+              amount: cleanAmount,
+              merchant: item.merchant || item.name || "Unknown",
+              description: item.description || "",
+              category: "Other",
+              confidence: "low",
+            };
+        }
+      });
+
+    const documentType = parsed.type || "receipt";
+    const summary = parsed.summary || `Found ${items.length} item${items.length === 1 ? "" : "s"}`;
+
+    return res.status(200).json({ type: documentType, items, summary });
   } catch (error) {
     console.error("CashPilot OCR error:", error);
     return res.status(500).json({
