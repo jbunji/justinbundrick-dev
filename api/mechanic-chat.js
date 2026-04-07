@@ -18,7 +18,8 @@ const TOOL_DEFINITIONS = [
       parameters: {
         type: "object",
         properties: {
-          serviceType: { type: "string", enum: ["Oil Change", "Tire Rotation", "Tire Replacement", "Brake Pads", "Air Filter", "Transmission Fluid", "Coolant Flush", "Spark Plugs", "Battery", "State Inspection", "Brake Inspection", "Wheel Alignment", "Cabin Air Filter", "Wiper Blades", "Serpentine Belt", "Timing Belt", "Other"], description: "Type of service" },
+          serviceType: { type: "string", enum: ["Oil Change", "Tire Rotation", "Tire Replacement", "Brake Pads", "Air Filter", "Transmission Fluid", "Coolant Flush", "Spark Plugs", "Battery", "State Inspection", "Brake Inspection", "Wheel Alignment", "Cabin Air Filter", "Wiper Blades", "Serpentine Belt", "Timing Belt", "Windshield", "Other"], description: "Type of service. Use 'Other' with customServiceType for anything not in the list (e.g. radiator, AC recharge, suspension work)" },
+          customServiceType: { type: "string", maxLength: 100, description: "Required when serviceType is 'Other'. The specific service name (e.g. 'Radiator Replacement', 'AC Recharge', 'Suspension Repair')" },
           cost: { type: "number", minimum: 0, maximum: 50000, description: "Cost in dollars (0 if not mentioned)" },
           odometer: { type: "integer", minimum: 0, maximum: 999999, description: "Odometer reading at time of service" },
           shopName: { type: "string", maxLength: 100, description: "Name of the shop/mechanic" },
