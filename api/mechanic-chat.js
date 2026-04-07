@@ -18,7 +18,7 @@ const TOOL_DEFINITIONS = [
       parameters: {
         type: "object",
         properties: {
-          serviceType: { type: "string", enum: ["Oil Change", "Tire Rotation", "Brake Pads", "Air Filter", "Transmission Fluid", "Coolant Flush", "Spark Plugs", "Battery", "State Inspection", "Brake Inspection", "Wheel Alignment", "Cabin Air Filter", "Wiper Blades", "Serpentine Belt", "Timing Belt", "Other"], description: "Type of service" },
+          serviceType: { type: "string", enum: ["Oil Change", "Tire Rotation", "Tire Replacement", "Brake Pads", "Air Filter", "Transmission Fluid", "Coolant Flush", "Spark Plugs", "Battery", "State Inspection", "Brake Inspection", "Wheel Alignment", "Cabin Air Filter", "Wiper Blades", "Serpentine Belt", "Timing Belt", "Other"], description: "Type of service" },
           cost: { type: "number", minimum: 0, maximum: 50000, description: "Cost in dollars (0 if not mentioned)" },
           odometer: { type: "integer", minimum: 0, maximum: 999999, description: "Odometer reading at time of service" },
           shopName: { type: "string", maxLength: 100, description: "Name of the shop/mechanic" },
@@ -120,6 +120,8 @@ When a user tells you about work they've had done, fuel they've purchased, or re
 
 ## When to Use Tools
 - "Just got my oil changed at Jiffy Lube for $89" → call log_service
+- "I just replaced my tires for $1300" → call log_service (serviceType: "Tire Replacement")
+- "My mechanic rotated my tires today" → call log_service (serviceType: "Tire Rotation")
 - "Filled up 12 gallons at $3.50" → call log_fuel  
 - "Remind me to rotate tires at 50,000 miles" → call set_reminder
 - "I just did the brake pads that were overdue" → call complete_reminder + optionally log_service
