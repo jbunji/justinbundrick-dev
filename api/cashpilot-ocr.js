@@ -8,6 +8,16 @@ Return a JSON object with:
 - "type": The document type — one of: "receipt", "budget_spreadsheet", "bank_statement", "budget_list", or "mixed"
 - "items": Array of all financial items found (can contain different types in the same array)
 - "summary": A brief one-line summary like "Found 5 bills, 2 income sources, and 8 budget categories"
+- "receipt_summary": (only if document is a receipt) An object with:
+  - "merchant": Store/vendor name
+  - "date": Date in YYYY-MM-DD format
+  - "subtotal": Dollar amount (number, optional)
+  - "tax": Dollar amount (number, optional)
+  - "total": Final total amount (number)
+  - "category": Best guess category (optional)
+  - "note": Short note or additional info (optional)
+
+If the document is NOT a receipt, omit "receipt_summary".
 
 For EACH item in "items", determine the TYPE and extract the appropriate fields:
 
@@ -267,8 +277,9 @@ export default async function handler(req, res) {
 
     const documentType = parsed.type || "receipt";
     const summary = parsed.summary || `Found ${items.length} item${items.length === 1 ? "" : "s"}`;
+    const receiptSummary = parsed.receipt_summary || null;
 
-    return res.status(200).json({ type: documentType, items, summary });
+    return res.status(200).json({ type: documentType, items, summary, receipt_summary: receiptSummary });
   } catch (error) {
     console.error("CashPilot OCR error:", error);
     return res.status(500).json({
