@@ -1,5 +1,1 @@
-{
-  "installCommand": "npm install",
-  "buildCommand": "astro build",
-  "outputDirectory": "dist"
-}
+{"redirects":[]}
