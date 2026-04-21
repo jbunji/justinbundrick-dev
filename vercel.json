@@ -1,5 +1,10 @@
 {
   "installCommand": "npm install",
   "buildCommand": "astro build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "functions": {
+    "api/*.js": {
+      "maxDuration": 60
+    }
+  }
 }
