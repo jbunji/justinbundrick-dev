@@ -206,6 +206,18 @@ export default async function handler(req, res) {
       items = [];
     }
 
+    // Strip trailing parenthetical descriptions from category names so
+    // imported budgets match existing defaults. "Utilities (electricity,
+    // water, gas)" -> "Utilities". Applied only to budget/expense category
+    // fields — bill names, income names, goal names, and merchants keep
+    // their parens because those are often legitimate ("Comcast (Internet)",
+    // "Acme Corp (W-2)").
+    const stripCategoryParens = (name) => {
+      if (typeof name !== "string") return name;
+      const stripped = name.replace(/\s*\([^()]*\)\s*$/, "").trim();
+      return stripped.length > 0 ? stripped : name;
+    };
+
     // Validate and clean each item based on type
     items = items
       .filter((item) => item && item.type && item.amount && item.amount > 0)
@@ -220,7 +232,7 @@ export default async function handler(req, res) {
               amount: cleanAmount,
               merchant: item.merchant || item.description || "Unknown",
               description: item.description || item.merchant || "",
-              category: item.category || "Other",
+              category: stripCategoryParens(item.category) || "Other",
               confidence: ["high", "medium", "low"].includes(item.confidence) ? item.confidence : "low",
             };
 
@@ -250,7 +262,7 @@ export default async function handler(req, res) {
           case "budget":
             return {
               type: "budget",
-              category: item.category || "Other",
+              category: stripCategoryParens(item.category) || "Other",
               amount: cleanAmount,
             };
 
