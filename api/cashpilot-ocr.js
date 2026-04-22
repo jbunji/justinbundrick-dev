@@ -8,16 +8,16 @@ Return a JSON object with:
 - "type": The document type — one of: "receipt", "budget_spreadsheet", "bank_statement", "budget_list", or "mixed"
 - "items": Array of all financial items found (can contain different types in the same array)
 - "summary": A brief one-line summary like "Found 5 bills, 2 income sources, and 8 budget categories"
-- "receipt_summary": (only if document is a receipt) An object with:
-  - "merchant": Store/vendor name
+- "receipt_summary": REQUIRED if document is a receipt or invoice. An object with:
+  - "merchant": Store/vendor name (from the business header, "Bill To" vendor, or "From" line — NOT the customer's name)
   - "date": Date in YYYY-MM-DD format
   - "subtotal": Dollar amount (number, optional)
   - "tax": Dollar amount (number, optional)
-  - "total": Final total amount (number)
-  - "category": Best guess category (optional)
-  - "note": Short note or additional info (optional)
+  - "total": Final total INCLUDING tax (number — REQUIRED for receipts/invoices)
+  - "category": Best guess single category for the whole purchase
+  - "note": Short description of what was purchased (e.g. "Groceries", "Design services: Social Media, Furniture, Interior Design, Architecture")
 
-If the document is NOT a receipt, omit "receipt_summary".
+If the document is NOT a receipt/invoice, omit "receipt_summary".
 
 For EACH item in "items", determine the TYPE and extract the appropriate fields:
 
@@ -26,7 +26,7 @@ TYPE: "expense" (one-time transaction)
 - amount: Dollar amount as number (no $ sign)
 - merchant: Store/vendor name
 - category: Best guess from: Groceries, Dining, Gas, Household, Subscriptions, Utilities, Shopping, Entertainment, Health, Transportation, Insurance, Housing, Personal, Education, Gifts, Other
-- date: ISO 8601 (YYYY-MM-DD). If missing, use current date (2026-04-03)
+- date: ISO 8601 (YYYY-MM-DD). If missing, use today's date
 - confidence: "high", "medium", or "low"
 
 TYPE: "bill" (recurring payment)
@@ -59,18 +59,17 @@ DETECTION RULES:
 - If you see "Income", "Paycheck", "Salary" → extract as income
 - If you see "Budget", "Monthly Limit", "Allocated" → extract as budgets
 - If you see "Goal", "Savings Target" → extract as goals
-- Receipts with line items → extract as expenses
-- Bank statements → extract as expenses (use description as merchant)
-- Spreadsheet with mixed data → extract ALL types you see
+- Receipts and invoices (single vendor, single date, has subtotal/tax/total) → type="receipt", return ONLY receipt_summary with the final total INCLUDING tax. DO NOT itemize line items as individual expenses — the user wants one transaction, not one per line. Put line item descriptions in receipt_summary.note if useful.
+- Bank statements (multiple merchants, multiple dates, transaction list) → extract each row as a separate expense
+- Budget spreadsheets (monthly categories like Housing/Food/Transport with allocated amounts) → itemize each row as budget/bill/income
 
 IMPORTANT:
-- Extract EVERY line item — don't skip rows
-- Skip totals/subtotals/grand totals
-- Skip running balances
-- Skip headers/labels (only extract actual data rows)
+- For RECEIPTS/INVOICES: return type="receipt" and put the total (with tax) in receipt_summary.total. Leave items array empty.
+- For BUDGET SPREADSHEETS: itemize every row — EVERY row should become an item
+- For BANK STATEMENTS: itemize every transaction row
+- Skip running balances, column headers, and labels
 - If uncertain about type, default to "expense"
 - Handle messy handwriting and partial data gracefully
-- For budget spreadsheets, EVERY row should become an item
 
 Return ONLY valid JSON. No markdown, no explanation, no code fences.
 
@@ -288,8 +287,46 @@ export default async function handler(req, res) {
       });
 
     const documentType = parsed.type || "receipt";
+    let receiptSummary = parsed.receipt_summary || null;
+
+    // Collapse receipts/invoices into a single expense so the user gets ONE
+    // transaction per receipt (tax included), not one per line item.
+    const isReceiptLike =
+      documentType === "receipt" ||
+      documentType === "invoice" ||
+      (receiptSummary && typeof receiptSummary.total === "number" && receiptSummary.total > 0);
+
+    if (isReceiptLike) {
+      // If Gemini didn't return a usable summary, synthesize one from items.
+      if (!receiptSummary || typeof receiptSummary.total !== "number" || receiptSummary.total <= 0) {
+        const expenseItems = items.filter((i) => i.type === "expense");
+        const syntheticTotal = expenseItems.reduce((sum, i) => sum + (i.amount || 0), 0);
+        if (syntheticTotal > 0) {
+          receiptSummary = {
+            merchant: expenseItems[0]?.merchant || "Receipt",
+            date: expenseItems[0]?.date || new Date().toISOString().split("T")[0],
+            total: Math.round(syntheticTotal * 100) / 100,
+            category: expenseItems[0]?.category || "Other",
+            note: expenseItems.map((i) => i.merchant || i.description).filter(Boolean).slice(0, 6).join(", "),
+          };
+        }
+      }
+
+      if (receiptSummary && receiptSummary.total > 0) {
+        const collapsedExpense = {
+          type: "expense",
+          date: receiptSummary.date || new Date().toISOString().split("T")[0],
+          amount: Math.round(receiptSummary.total * 100) / 100,
+          merchant: (receiptSummary.merchant && receiptSummary.merchant.trim()) || "Receipt",
+          description: receiptSummary.note || "",
+          category: stripCategoryParens(receiptSummary.category) || "Other",
+          confidence: "high",
+        };
+        items = [collapsedExpense];
+      }
+    }
+
     const summary = parsed.summary || `Found ${items.length} item${items.length === 1 ? "" : "s"}`;
-    const receiptSummary = parsed.receipt_summary || null;
 
     return res.status(200).json({ type: documentType, items, summary, receipt_summary: receiptSummary });
   } catch (error) {
