@@ -2,7 +2,14 @@
 // POST /api/cashpilot-ocr
 // Photo → Gemini Vision → Structured expense data
 
-const EXTRACTION_PROMPT = `Analyze this image of financial data (receipt, budget spreadsheet, bank statement, handwritten budget list, Excel screenshot, Google Sheets screenshot, or any financial document). Extract ALL financial data you can find.
+function buildExtractionPrompt() {
+  const today = new Date().toISOString().split("T")[0];
+  return EXTRACTION_PROMPT_TEMPLATE.replace(/\{\{TODAY\}\}/g, today);
+}
+
+const EXTRACTION_PROMPT_TEMPLATE = `Analyze this image of financial data (receipt, budget spreadsheet, bank statement, handwritten budget list, Excel screenshot, Google Sheets screenshot, or any financial document). Extract ALL financial data you can find.
+
+TODAY'S DATE IS {{TODAY}}. Use this as the default for any item whose date is not explicitly shown on the page.
 
 Return a JSON object with:
 - "type": The document type — one of: "receipt", "budget_spreadsheet", "bank_statement", "budget_list", or "mixed"
@@ -26,7 +33,7 @@ TYPE: "expense" (one-time transaction)
 - amount: Dollar amount as number (no $ sign)
 - merchant: Store/vendor name
 - category: Best guess from: Groceries, Dining, Gas, Household, Subscriptions, Utilities, Shopping, Entertainment, Health, Transportation, Insurance, Housing, Personal, Education, Gifts, Other
-- date: ISO 8601 (YYYY-MM-DD). If missing, use today's date
+- date: ISO 8601 (YYYY-MM-DD). If missing or implied ("today", "yesterday", no date shown), use {{TODAY}}. NEVER invent a date — if unsure, use {{TODAY}}.
 - confidence: "high", "medium", or "low"
 
 TYPE: "bill" (recurring payment)
@@ -147,7 +154,7 @@ export default async function handler(req, res) {
             {
               role: "user",
               content: [
-                { type: "text", text: EXTRACTION_PROMPT },
+                { type: "text", text: buildExtractionPrompt() },
                 {
                   type: "image_url",
                   image_url: { url: `data:image/jpeg;base64,${image}` },
