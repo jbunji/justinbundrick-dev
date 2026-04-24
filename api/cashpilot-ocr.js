@@ -54,22 +54,28 @@ TYPE: "goal" (savings goal)
 - name: Goal name
 - amount: Target amount
 
-DETECTION RULES:
-- If you see columns like "Bill", "Due Date", "Amount" → extract as bills
-- If you see "Income", "Paycheck", "Salary" → extract as income
-- If you see "Budget", "Monthly Limit", "Allocated" → extract as budgets
-- If you see "Goal", "Savings Target" → extract as goals
-- Receipts and invoices (single vendor, single date, has subtotal/tax/total) → type="receipt", return ONLY receipt_summary with the final total INCLUDING tax. DO NOT itemize line items as individual expenses — the user wants one transaction, not one per line. Put line item descriptions in receipt_summary.note if useful.
-- Bank statements (multiple merchants, multiple dates, transaction list) → extract each row as a separate expense
-- Budget spreadsheets (monthly categories like Housing/Food/Transport with allocated amounts) → itemize each row as budget/bill/income
+DETECTION RULES — read section headers on the spreadsheet carefully. A header categorizes every row under it:
+- "Income" / "Paycheck" / "Salary" / "Base Pay" / "BAH" / "BAS" header → every row under it is TYPE: "income"
+- "Bill" / "Bills" / "Due Date" / "Monthly Payments" header → every row is TYPE: "bill"
+- "Budget" / "Monthly Limit" / "Allocated" / "Budgeted" header → every row is TYPE: "budget"
+- "Expenses" / "Spending" header → every row is TYPE: "expense"
+- "Goal" / "Goals" / "Savings Target" / "Investments" / "Investment" / "Retirement" / "TSP" / "401k" / "IRA" / "Brokerage" header → every row is TYPE: "goal" (investments ARE savings goals in this app — Acorns, Portfolio, Savings, TSP contributions all become goals)
+- Receipts and invoices (single vendor, single date, has subtotal/tax/total) → type="receipt", return ONLY receipt_summary with the final total INCLUDING tax. DO NOT itemize line items. Put line item descriptions in receipt_summary.note.
+- Bank statements (multiple merchants, multiple dates, transaction list) → each row is TYPE: "expense"
+
+EXTRACTION RULES — DO NOT SKIP ROWS:
+- Read every single data row under every section header. If there are 8 expense rows, return 8 expense items. If there are 3 investment rows, return 3 goal items.
+- Amounts must match EXACTLY what's on the page. $256.65 stays $256.65. Do NOT round $256.65 to 257 or $300.50 to 300.
+- Skip ONLY: totals/subtotals/grand-totals, running balances, column headers, blank rows.
+- Rows with dashes/hyphens in the amount column (like "-") mean zero — skip them.
+- If a row has multiple amount columns (e.g. "Before Tax", "After Tax"), use the "After Tax" / net amount for income.
 
 IMPORTANT:
 - For RECEIPTS/INVOICES: return type="receipt" and put the total (with tax) in receipt_summary.total. Leave items array empty.
-- For BUDGET SPREADSHEETS: itemize every row — EVERY row should become an item
-- For BANK STATEMENTS: itemize every transaction row
-- Skip running balances, column headers, and labels
-- If uncertain about type, default to "expense"
-- Handle messy handwriting and partial data gracefully
+- For BUDGET SPREADSHEETS: itemize every row — EVERY row under EVERY section header should become an item, with its type determined by the section header above it.
+- For BANK STATEMENTS: itemize every transaction row.
+- Do NOT drop items because you think they're "similar" or "duplicates" — if they appear on the page, return them.
+- Handle messy handwriting and partial data gracefully.
 
 Return ONLY valid JSON. No markdown, no explanation, no code fences.
 
@@ -120,10 +126,12 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Base64 image data is required" });
     }
 
-    // Call OpenRouter with Gemini Vision
-    const openRouterResponse = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
+    // Call OpenRouter with Gemini Vision — retry on transient upstream errors.
+    // 502/503/504 from OpenRouter are almost always upstream LLM hiccups
+    // (Gemini timeout, rate limit, capacity), not image problems. Retrying
+    // once or twice turns most of those into successes.
+    const callOpenRouter = () =>
+      fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
@@ -137,31 +145,58 @@ export default async function handler(req, res) {
             {
               role: "user",
               content: [
-                {
-                  type: "text",
-                  text: EXTRACTION_PROMPT,
-                },
+                { type: "text", text: EXTRACTION_PROMPT },
                 {
                   type: "image_url",
-                  image_url: {
-                    url: `data:image/jpeg;base64,${image}`,
-                  },
+                  image_url: { url: `data:image/jpeg;base64,${image}` },
                 },
               ],
             },
           ],
-          max_tokens: 2000,
-          temperature: 0.1,
+          max_tokens: 2500,
+          temperature: 0,
         }),
+      });
+
+    let openRouterResponse;
+    let lastStatus = 0;
+    const maxAttempts = 3;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        openRouterResponse = await callOpenRouter();
+      } catch (networkErr) {
+        console.error(`OCR network error (attempt ${attempt}):`, networkErr.message);
+        lastStatus = 0;
+        if (attempt < maxAttempts) {
+          await new Promise((r) => setTimeout(r, 400 * attempt));
+          continue;
+        }
+        return res.status(503).json({
+          error: "AI service unreachable — try again in a moment",
+          detail: "network",
+          transient: true,
+        });
       }
-    );
+      if (openRouterResponse.ok) break;
+      lastStatus = openRouterResponse.status;
+      const isTransient = [429, 500, 502, 503, 504].includes(lastStatus);
+      if (!isTransient || attempt === maxAttempts) break;
+      // Exponential backoff with jitter: 400ms, 900ms
+      const delay = 400 * attempt + Math.floor(Math.random() * 200);
+      console.warn(`OCR upstream ${lastStatus} on attempt ${attempt}, retrying in ${delay}ms`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
 
     if (!openRouterResponse.ok) {
       const errorText = await openRouterResponse.text();
-      console.error("OpenRouter OCR error:", openRouterResponse.status, errorText);
-      return res.status(502).json({
-        error: "AI vision service unavailable",
+      console.error("OpenRouter OCR error (final):", openRouterResponse.status, errorText);
+      const isTransient = [429, 500, 502, 503, 504].includes(openRouterResponse.status);
+      return res.status(openRouterResponse.status === 429 ? 429 : 502).json({
+        error: isTransient
+          ? "AI service is busy — try again in a few seconds"
+          : "AI vision service error",
         detail: openRouterResponse.status,
+        transient: isTransient,
       });
     }
 
