@@ -98,7 +98,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       status: "ok",
       service: "cashpilot-ocr",
-      model: "google/gemini-2.0-flash-001",
+      model: "anthropic/claude-haiku-4.5",
       timestamp: new Date().toISOString(),
     });
   }
@@ -140,7 +140,7 @@ export default async function handler(req, res) {
           "X-Title": "CashPilot OCR",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.0-flash-001",
+          model: "anthropic/claude-haiku-4.5",
           messages: [
             {
               role: "user",
@@ -153,7 +153,7 @@ export default async function handler(req, res) {
               ],
             },
           ],
-          max_tokens: 2500,
+          max_tokens: 3000,
           temperature: 0,
         }),
       });
