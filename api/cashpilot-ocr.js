@@ -63,12 +63,14 @@ DETECTION RULES — read section headers on the spreadsheet carefully. A header 
 - Receipts and invoices (single vendor, single date, has subtotal/tax/total) → type="receipt", return ONLY receipt_summary with the final total INCLUDING tax. DO NOT itemize line items. Put line item descriptions in receipt_summary.note.
 - Bank statements (multiple merchants, multiple dates, transaction list) → each row is TYPE: "expense"
 
-EXTRACTION RULES — DO NOT SKIP ROWS:
+EXTRACTION RULES — DO NOT SKIP ROWS, DO NOT DUPLICATE ROWS:
 - Read every single data row under every section header. If there are 8 expense rows, return 8 expense items. If there are 3 investment rows, return 3 goal items.
 - Amounts must match EXACTLY what's on the page. $256.65 stays $256.65. Do NOT round $256.65 to 257 or $300.50 to 300.
 - Skip ONLY: totals/subtotals/grand-totals, running balances, column headers, blank rows.
 - Rows with dashes/hyphens in the amount column (like "-") mean zero — skip them.
-- If a row has multiple amount columns (e.g. "Before Tax", "After Tax"), use the "After Tax" / net amount for income.
+- ONE ITEM PER ROW. If a row has multiple amount columns for different TIME PERIODS (2017/2018/2019, Q1/Q2/Q3/Q4, Jan/Feb/Mar, This Year/Last Year, Projected/Actual), return ONE item per row using the MOST RECENT column's value (or the rightmost real number if no dates). Do NOT return one item per year-column — that creates duplicates.
+- If a row has multiple amount columns for different CALCULATIONS of the same thing ("Before Tax", "After Tax", "Gross", "Net"), use the "After Tax" / "Net" value for income and the "Gross" / final value for expenses.
+- If a row has a "Total" column at the far right summing the other columns, use the Total column when appropriate (for annual summaries) but NOT when the other columns are separate line items.
 
 IMPORTANT:
 - For RECEIPTS/INVOICES: return type="receipt" and put the total (with tax) in receipt_summary.total. Leave items array empty.
