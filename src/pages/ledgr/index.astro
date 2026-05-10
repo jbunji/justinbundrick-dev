@@ -1,0 +1,181 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/global.css';
+
+const features = [
+  {
+    title: 'Know what is safe to spend',
+    description: 'Ledgr keeps budgets, bills, income, savings goals, and spending in one simple daily view.',
+    icon: '✨',
+  },
+  {
+    title: 'Talk to your money',
+    description: 'Log expenses, check bills, summarize spending, and update your plan with plain-language AI help.',
+    icon: '💬',
+  },
+  {
+    title: 'Receipts without the paperwork',
+    description: 'Scan receipts, attach them to transactions, and export receipt packets when you need records.',
+    icon: '🧾',
+  },
+  {
+    title: 'Built for real-life budgets',
+    description: 'Track bills, subscriptions, income sources, savings goals, categories, reports, and freelancer tax records.',
+    icon: '📊',
+  },
+];
+
+const freePlan = ['15 AI messages per day', '3 receipt scans', '5 bills', '3 income sources', '2 savings goals', 'Basic reports', 'CSV export'];
+const proPlan = ['Unlimited AI messages', 'Unlimited receipt scans', 'PDF reports', 'Receipt packet export', 'Freelancer mode', 'Expanded planning limits'];
+---
+
+<Layout
+  title="Ledgr — Simple Money Tracking"
+  description="Ledgr is a simple AI money tracker for budgets, bills, receipts, spending, savings goals, reports, and free-to-spend clarity."
+>
+  <main class="min-h-screen bg-[#0b0f17] text-white overflow-hidden">
+    <section class="relative px-6 pt-10 pb-20">
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute -top-28 -right-24 w-96 h-96 rounded-full bg-indigo-500/20 blur-3xl"></div>
+        <div class="absolute top-72 -left-28 w-80 h-80 rounded-full bg-amber-400/10 blur-3xl"></div>
+        <div class="absolute bottom-0 right-1/4 w-64 h-64 rounded-full bg-emerald-400/10 blur-3xl"></div>
+      </div>
+
+      <nav class="relative max-w-6xl mx-auto flex items-center justify-between">
+        <a href="/apps" class="text-white/40 hover:text-white text-sm transition">← All apps</a>
+        <div class="flex items-center gap-3">
+          <a href="/ledgr/support" class="text-white/50 hover:text-white text-sm transition">Support</a>
+          <a href="/ledgr/privacy" class="text-white/50 hover:text-white text-sm transition">Privacy</a>
+        </div>
+      </nav>
+
+      <div class="relative max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center pt-20">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-300/20 text-amber-200 text-sm mb-6">
+            <span class="w-2 h-2 rounded-full bg-emerald-300"></span>
+            Simple money tracking with AI
+          </div>
+
+          <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-[0.94]">
+            Budgeting that finally feels calm.
+          </h1>
+
+          <p class="text-lg md:text-xl text-white/55 leading-relaxed mt-6 max-w-2xl">
+            Ledgr helps you track spending, plan bills, scan receipts, monitor goals, and understand what is actually free to spend without bank sync clutter or spreadsheet gymnastics.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 mt-8">
+            <a href="/ledgr/support" class="px-6 py-3 rounded-xl bg-white text-[#0b0f17] font-bold hover:bg-amber-100 transition text-center">
+              Get Support
+            </a>
+            <a href="#features" class="px-6 py-3 rounded-xl border border-white/15 text-white/80 hover:text-white hover:border-white/30 transition text-center">
+              See Features
+            </a>
+          </div>
+
+          <p class="text-white/30 text-sm mt-5">
+            No bank credentials required. No ads. Designed for manual control and clear decisions.
+          </p>
+        </div>
+
+        <div class="relative">
+          <div class="absolute inset-8 rounded-[3rem] bg-indigo-500/20 blur-3xl"></div>
+          <div class="relative rounded-[2rem] border border-white/10 bg-white/[0.06] p-5 shadow-2xl backdrop-blur">
+            <div class="flex items-center gap-4">
+              <img src="/icons/ledgr.png" alt="Ledgr app icon" class="w-20 h-20 rounded-3xl shadow-xl" />
+              <div>
+                <p class="text-white/40 text-sm">Ledgr</p>
+                <h2 class="text-2xl font-bold">Simple Money Tracking</h2>
+              </div>
+            </div>
+
+            <div class="mt-8 rounded-3xl bg-gradient-to-br from-[#161d35] via-[#1a1830] to-[#6d6bf2] p-6 border border-white/10">
+              <p class="text-white/50 text-sm font-semibold uppercase tracking-[0.2em]">Today</p>
+              <p class="text-5xl font-black mt-3">$2,957</p>
+              <p class="text-white/60 mt-2">free to spend</p>
+              <div class="grid grid-cols-3 gap-3 mt-6">
+                <div class="rounded-2xl bg-white/10 p-3">
+                  <p class="text-white/35 text-xs uppercase tracking-widest">Spent</p>
+                  <p class="text-red-300 font-bold">$0</p>
+                </div>
+                <div class="rounded-2xl bg-white/10 p-3">
+                  <p class="text-white/35 text-xs uppercase tracking-widest">Bills</p>
+                  <p class="text-amber-200 font-bold">2/2</p>
+                </div>
+                <div class="rounded-2xl bg-white/10 p-3">
+                  <p class="text-white/35 text-xs uppercase tracking-widest">Saved</p>
+                  <p class="text-emerald-300 font-bold">$10k</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 rounded-3xl bg-white/[0.07] border border-white/10 p-5">
+              <p class="text-white/45 text-sm">Ask Ledgr</p>
+              <p class="text-white text-lg mt-1">“Can I afford takeout tonight?”</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="px-6 py-16 border-y border-white/10 bg-white/[0.02]">
+      <div class="max-w-6xl mx-auto">
+        <div class="max-w-2xl mb-10">
+          <p class="text-amber-200 text-sm uppercase tracking-[0.2em] font-semibold">What Ledgr does</p>
+          <h2 class="text-3xl md:text-5xl font-black mt-3">The useful parts of a finance app, without the maze.</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-5">
+          {features.map((feature) => (
+            <div class="rounded-3xl border border-white/10 bg-white/[0.05] p-6 hover:bg-white/[0.07] transition">
+              <div class="text-3xl mb-4">{feature.icon}</div>
+              <h3 class="text-xl font-bold mb-2">{feature.title}</h3>
+              <p class="text-white/50 leading-relaxed">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 py-16">
+      <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6">
+        <div class="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
+          <p class="text-white/40 text-sm uppercase tracking-[0.2em] font-semibold">Free</p>
+          <h2 class="text-3xl font-black mt-2">Enough to get hooked.</h2>
+          <ul class="mt-6 space-y-3">
+            {freePlan.map((item) => (
+              <li class="flex items-center gap-3 text-white/65">
+                <span class="w-5 h-5 rounded-full bg-emerald-400/15 text-emerald-300 inline-flex items-center justify-center text-xs">✓</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="rounded-3xl border border-amber-300/20 bg-gradient-to-br from-amber-300/10 to-indigo-500/10 p-6">
+          <p class="text-amber-200 text-sm uppercase tracking-[0.2em] font-semibold">Ledgr Pro</p>
+          <h2 class="text-3xl font-black mt-2">For power users, exports, and freelancer work.</h2>
+          <ul class="mt-6 space-y-3">
+            {proPlan.map((item) => (
+              <li class="flex items-center gap-3 text-white/75">
+                <span class="w-5 h-5 rounded-full bg-amber-300/20 text-amber-100 inline-flex items-center justify-center text-xs">✓</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="px-6 py-10 border-t border-white/10">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between gap-4 text-sm text-white/35">
+        <p>© 2026 Justin Bundrick. All rights reserved.</p>
+        <div class="flex gap-5">
+          <a href="/ledgr/support" class="hover:text-white transition">Support</a>
+          <a href="/ledgr/privacy" class="hover:text-white transition">Privacy</a>
+          <a href="/apps" class="hover:text-white transition">More apps</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+</Layout>

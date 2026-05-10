@@ -1,0 +1,99 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/global.css';
+---
+
+<Layout title="Ledgr — Support" description="Support, FAQ, and help for Ledgr.">
+  <main class="min-h-screen bg-[#0b0f17] text-white">
+    <div class="max-w-3xl mx-auto px-5 py-16">
+      <a href="/ledgr" class="text-white/35 hover:text-white text-sm transition mb-8 inline-flex items-center gap-1">
+        ← Back to Ledgr
+      </a>
+
+      <div class="flex items-center gap-4 mt-6 mb-8">
+        <img src="/icons/ledgr.png" alt="Ledgr app icon" class="w-16 h-16 rounded-2xl shadow-lg" />
+        <div>
+          <h1 class="text-3xl font-bold text-white">Ledgr Support</h1>
+          <p class="text-white/40">Help for budgets, bills, receipts, reports, and Ledgr Pro.</p>
+        </div>
+      </div>
+
+      <section class="rounded-3xl border border-white/10 bg-white/[0.05] p-6 mb-10">
+        <h2 class="text-xl font-semibold text-white mb-3">Contact</h2>
+        <p class="text-white/60 mb-5 leading-relaxed">
+          For questions, bug reports, billing issues, or feature requests, email:
+        </p>
+        <a href="mailto:bunjistudios@gmail.com" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-400/15 border border-amber-300/25 text-amber-200 hover:text-amber-100 transition font-semibold">
+          bunjistudios@gmail.com
+        </a>
+        <p class="text-white/35 text-sm mt-4">We typically respond within 24-48 hours.</p>
+      </section>
+
+      <section class="space-y-8">
+        <div>
+          <h2 class="text-xl font-semibold text-white mb-3">How does Ledgr work?</h2>
+          <p class="text-white/60 leading-relaxed">
+            Ledgr is a manual money tracker with AI assistance. You can log expenses, add income, track bills, scan receipts, review reports, and ask Ledgr questions about your budget in plain language.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-white mb-3">Does Ledgr connect to my bank?</h2>
+          <p class="text-white/60 leading-relaxed">
+            No. Ledgr does not request or store bank credentials. Transactions are added by you through typing, voice, AI chat, receipt scanning, or manual entry.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-white mb-3">What is free?</h2>
+          <p class="text-white/60 leading-relaxed">
+            Free users get 15 AI messages per day, 3 successful receipt scans, 5 bills, 3 income sources, 2 savings goals, 15 budget categories, basic reports, and CSV export.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-white mb-3">What is included in Ledgr Pro?</h2>
+          <ul class="list-disc list-inside text-white/60 space-y-2 leading-relaxed">
+            <li>Unlimited AI messages</li>
+            <li>Unlimited receipt scans</li>
+            <li>PDF reports and receipt packet export</li>
+            <li>Freelancer mode for business income, expenses, and tax set-asides</li>
+            <li>Expanded limits for bills, income sources, savings goals, and custom budget categories</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-white mb-3">How do I restore purchases?</h2>
+          <p class="text-white/60 leading-relaxed">
+            Open Ledgr Settings, choose the Pro or subscription section, then tap Restore Purchases. Make sure you are signed in with the same Apple ID used for the original purchase.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-white mb-3">How do I cancel Ledgr Pro?</h2>
+          <p class="text-white/60 leading-relaxed">
+            Subscriptions are managed by Apple. Open iPhone Settings → tap your name → Subscriptions → Ledgr Pro → Cancel. You keep Pro access until the end of the current billing period.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-white mb-3">How do I delete my data?</h2>
+          <p class="text-white/60 leading-relaxed">
+            Ledgr stores your budget data locally on your device. You can delete local data from Ledgr Settings when available, or remove the app from your device to delete its local app data. If you need help, email support.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-white mb-3">Is my data private?</h2>
+          <p class="text-white/60 leading-relaxed">
+            Ledgr does not sell data or show ads. Some AI and receipt scanning features send the message, receipt image, or relevant budget context to a secure cloud service to generate a response. See the <a href="/ledgr/privacy" class="text-amber-300 hover:text-amber-200 underline">Privacy Policy</a> for details.
+          </p>
+        </div>
+      </section>
+
+      <footer class="mt-16 pt-8 border-t border-white/10 text-white/35 text-sm">
+        <p>© 2026 Justin Bundrick. All rights reserved.</p>
+      </footer>
+    </div>
+  </main>
+</Layout>
